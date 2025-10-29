@@ -2,7 +2,7 @@ import { memo, useCallback } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { createLogger } from '@/lib/logs/console/logger'
-import { useCopilotStore } from '@/stores/copilot/store'
+import { useCopilotStore } from '@/stores/panel-new/copilot/store'
 import { useWorkflowDiffStore } from '@/stores/workflow-diff'
 import { useWorkflowRegistry } from '@/stores/workflows/registry/store'
 import { mergeSubblockState } from '@/stores/workflows/utils'
@@ -80,7 +80,6 @@ export const DiffControls = memo(function DiffControls() {
               enabled: block.enabled !== undefined ? block.enabled : true,
               horizontalHandles:
                 block.horizontalHandles !== undefined ? block.horizontalHandles : true,
-              isWide: block.isWide !== undefined ? block.isWide : false,
               height: block.height !== undefined ? block.height : 90,
               subBlocks: block.subBlocks || {},
               outputs: block.outputs || {},
