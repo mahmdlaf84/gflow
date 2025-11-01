@@ -14,7 +14,7 @@ import { LoggingSession } from '@/lib/logs/execution/logging-session'
 import { buildTraceSpans } from '@/lib/logs/execution/trace-spans/trace-spans'
 import { decryptSecret, generateRequestId } from '@/lib/utils'
 import { loadDeployedWorkflowState } from '@/lib/workflows/db-helpers'
-import { TriggerUtils } from '@/lib/workflows/triggers'
+import { StartBlockPath, TriggerUtils } from '@/lib/workflows/triggers'
 import {
   createHttpResponseFromBlock,
   updateWorkflowRunCounts,
@@ -317,10 +317,9 @@ export async function executeWorkflow(
       throw new Error(errorMsg)
     }
 
-    const startBlockId = startBlock.blockId
-    const triggerBlock = startBlock.block
+    const { blockId: startBlockId, block: triggerBlock, path: startPath } = startBlock
 
-    if (triggerBlock.type !== 'starter') {
+    if (startPath !== StartBlockPath.LEGACY_STARTER) {
       const outgoingConnections = serializedWorkflow.connections.filter(
         (conn) => conn.source === startBlockId
       )
@@ -557,7 +556,7 @@ export async function POST(
             : undefined),
         workflowTriggerType:
           body.workflowTriggerType || (isInternalCall && body.stream ? 'chat' : 'api'),
-        input: body.input !== undefined ? body.input : body,
+        input: body,
       }
     }
 
@@ -607,13 +606,19 @@ export async function POST(
       const blocks = deployedData.blocks || {}
       logger.info(`[${requestId}] Loaded ${Object.keys(blocks).length} blocks from workflow`)
 
+      const startTriggerBlock = Object.values(blocks).find(
+        (block: any) => block.type === 'start_trigger'
+      ) as any
       const apiTriggerBlock = Object.values(blocks).find(
         (block: any) => block.type === 'api_trigger'
       ) as any
+      logger.info(`[${requestId}] Start trigger block found:`, !!startTriggerBlock)
       logger.info(`[${requestId}] API trigger block found:`, !!apiTriggerBlock)
 
-      if (apiTriggerBlock?.subBlocks?.inputFormat?.value) {
-        const inputFormat = apiTriggerBlock.subBlocks.inputFormat.value as Array<{
+      const triggerBlock = startTriggerBlock || apiTriggerBlock
+
+      if (triggerBlock?.subBlocks?.inputFormat?.value) {
+        const inputFormat = triggerBlock.subBlocks.inputFormat.value as Array<{
           name: string
           type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'files'
         }>
