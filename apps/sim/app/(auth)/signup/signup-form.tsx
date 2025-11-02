@@ -75,10 +75,12 @@ function SignupFormContent({
   githubAvailable,
   googleAvailable,
   isProduction,
+  ssoEnabled,
 }: {
   githubAvailable: boolean
   googleAvailable: boolean
   isProduction: boolean
+  ssoEnabled?: boolean
 }) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -101,12 +103,12 @@ function SignupFormContent({
   const [nameErrors, setNameErrors] = useState<string[]>([])
   const [showNameValidationError, setShowNameValidationError] = useState(false)
 
-  const rawSsoEnabled = getEnv('NEXT_PUBLIC_SSO_ENABLED') ?? getEnv('SSO_ENABLED')
-  const ssoEnabled = isTruthy(rawSsoEnabled)
+  const resolvedSsoEnabled =
+    typeof ssoEnabled === 'boolean' ? ssoEnabled : isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED'))
   const emailEnabled = !isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED'))
   const hasOAuthProviders = githubAvailable || googleAvailable
-  const hasAnyFederatedLogin = hasOAuthProviders || ssoEnabled
-  const hasOnlySSO = ssoEnabled && !emailEnabled && !hasOAuthProviders
+  const hasAnyFederatedLogin = hasOAuthProviders || resolvedSsoEnabled
+  const hasOnlySSO = resolvedSsoEnabled && !emailEnabled && !hasOAuthProviders
   const showBottomSection = hasAnyFederatedLogin && (!hasOnlySSO || emailEnabled)
   const showDivider = (emailEnabled || hasOnlySSO) && showBottomSection
 
@@ -398,7 +400,7 @@ function SignupFormContent({
             variant='primary'
             primaryClassName={buttonClass}
             label='Sign up with SSO'
-            enabled={ssoEnabled}
+            enabled={resolvedSsoEnabled}
           />
         </div>
       )}
@@ -543,7 +545,7 @@ function SignupFormContent({
             googleAvailable={googleAvailable}
             callbackURL={redirectUrl || '/workspace'}
             isProduction={isProduction}
-            ssoEnabled={ssoEnabled}
+            ssoEnabled={resolvedSsoEnabled}
             ssoLabel='Sign up with SSO'
             flow='sign-up'
           />
@@ -590,10 +592,12 @@ export default function SignupPage({
   githubAvailable,
   googleAvailable,
   isProduction,
+  ssoEnabled,
 }: {
   githubAvailable: boolean
   googleAvailable: boolean
   isProduction: boolean
+  ssoEnabled?: boolean
 }) {
   return (
     <Suspense
@@ -603,6 +607,7 @@ export default function SignupPage({
         githubAvailable={githubAvailable}
         googleAvailable={googleAvailable}
         isProduction={isProduction}
+        ssoEnabled={ssoEnabled}
       />
     </Suspense>
   )

@@ -31,9 +31,7 @@ export function SSOLoginButton({
   const router = useRouter()
 
   const resolvedEnabled =
-    typeof enabled === 'boolean'
-      ? enabled
-      : isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED') ?? getEnv('SSO_ENABLED'))
+    typeof enabled === 'boolean' ? enabled : isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED'))
 
   if (!resolvedEnabled) {
     return null

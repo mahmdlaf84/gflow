@@ -92,10 +92,12 @@ export default function LoginPage({
   githubAvailable,
   googleAvailable,
   isProduction,
+  ssoEnabled,
 }: {
   githubAvailable: boolean
   googleAvailable: boolean
   isProduction: boolean
+  ssoEnabled?: boolean
 }) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -368,12 +370,12 @@ export default function LoginPage({
     }
   }
 
-  const rawSsoEnabled = getEnv('NEXT_PUBLIC_SSO_ENABLED') ?? getEnv('SSO_ENABLED')
-  const ssoEnabled = isTruthy(rawSsoEnabled)
+  const resolvedSsoEnabled =
+    typeof ssoEnabled === 'boolean' ? ssoEnabled : isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED'))
   const emailEnabled = !isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED'))
   const hasOAuthProviders = githubAvailable || googleAvailable
-  const hasAnyFederatedLogin = hasOAuthProviders || ssoEnabled
-  const hasOnlySSO = ssoEnabled && !emailEnabled && !hasOAuthProviders
+  const hasAnyFederatedLogin = hasOAuthProviders || resolvedSsoEnabled
+  const hasOnlySSO = resolvedSsoEnabled && !emailEnabled && !hasOAuthProviders
   const showTopSSO = hasOnlySSO
   const showBottomSection = hasAnyFederatedLogin && (!hasOnlySSO || emailEnabled)
   const showDivider = (emailEnabled || showTopSSO) && showBottomSection
@@ -396,7 +398,7 @@ export default function LoginPage({
             callbackURL={callbackUrl}
             variant='primary'
             primaryClassName={buttonClass}
-            enabled={ssoEnabled}
+            enabled={resolvedSsoEnabled}
           />
         </div>
       )}
@@ -510,7 +512,7 @@ export default function LoginPage({
           <SocialLoginButtons
             googleAvailable={googleAvailable}
             githubAvailable={githubAvailable}
-            ssoEnabled={ssoEnabled}
+            ssoEnabled={resolvedSsoEnabled}
             isProduction={isProduction}
             callbackURL={callbackUrl}
             ssoLabel='Sign in with SSO'

@@ -5,7 +5,8 @@ import SignupForm from '@/app/(auth)/signup/signup-form'
 export const dynamic = 'force-dynamic'
 
 export default async function SignupPage() {
-  const { githubAvailable, googleAvailable, isProduction } = await getOAuthProviderStatus()
+  const { githubAvailable, googleAvailable, isProduction, ssoEnabled } =
+    await getOAuthProviderStatus()
 
   if (isTruthy(env.DISABLE_REGISTRATION)) {
     return <div>Registration is disabled, please contact your admin.</div>
@@ -16,6 +17,7 @@ export default async function SignupPage() {
       githubAvailable={githubAvailable}
       googleAvailable={googleAvailable}
       isProduction={isProduction}
+      ssoEnabled={ssoEnabled}
     />
   )
 }

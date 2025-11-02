@@ -1,6 +1,6 @@
 'use server'
 
-import { getEnv } from '@/lib/env'
+import { getEnv, isTruthy } from '@/lib/env'
 import { isProd } from '@/lib/environment'
 
 export async function getOAuthProviderStatus() {
@@ -12,5 +12,7 @@ export async function getOAuthProviderStatus() {
   const googleClientSecret = getEnv('GOOGLE_CLIENT_SECRET')
   const googleAvailable = Boolean(googleClientId && googleClientSecret)
 
-  return { githubAvailable, googleAvailable, isProduction: isProd }
+  const ssoEnabled = isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED') ?? getEnv('SSO_ENABLED'))
+
+  return { githubAvailable, googleAvailable, isProduction: isProd, ssoEnabled }
 }
