@@ -26,6 +26,37 @@ export function SocialLoginButtons({
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const isSignUpFlow = flow === 'sign-up'
 
+  const attemptRedirect = (result: unknown) => {
+    if (typeof window === 'undefined' || !result) {
+      return false
+    }
+
+    const payload = (result as { data?: unknown; url?: string; redirect?: boolean }).data ?? result
+
+    if (
+      payload &&
+      typeof payload === 'object' &&
+      'url' in payload &&
+      typeof (payload as { url?: unknown }).url === 'string'
+    ) {
+      const shouldRedirect =
+        typeof (payload as { redirect?: unknown }).redirect === 'boolean'
+          ? (payload as { redirect?: boolean }).redirect
+          : true
+
+      if (shouldRedirect) {
+        try {
+          window.location.href = (payload as { url: string }).url
+          return true
+        } catch (_error) {
+          return false
+        }
+      }
+    }
+
+    return false
+  }
+
   const buildErrorCallbackUrl = () => {
     const basePath = isSignUpFlow ? '/signup' : '/login'
     const params = new URLSearchParams()
@@ -41,7 +72,7 @@ export function SocialLoginButtons({
   async function signInWithGithub() {
     setIsGithubLoading(true)
     try {
-      await client.signIn.social({
+      const result = await client.signIn.social({
         provider: 'github',
         callbackURL,
         ...(isSignUpFlow
@@ -52,6 +83,10 @@ export function SocialLoginButtons({
           : {}),
         errorCallbackURL: buildErrorCallbackUrl(),
       })
+
+      if (attemptRedirect(result)) {
+        return
+      }
     } catch (err: any) {
       let errorMessage = 'Failed to sign in with GitHub'
 
@@ -72,7 +107,7 @@ export function SocialLoginButtons({
   async function signInWithGoogle() {
     setIsGoogleLoading(true)
     try {
-      await client.signIn.social({
+      const result = await client.signIn.social({
         provider: 'google',
         callbackURL,
         ...(isSignUpFlow
@@ -83,6 +118,10 @@ export function SocialLoginButtons({
           : {}),
         errorCallbackURL: buildErrorCallbackUrl(),
       })
+
+      if (attemptRedirect(result)) {
+        return
+      }
     } catch (err: any) {
       let errorMessage = 'Failed to sign in with Google'
 
