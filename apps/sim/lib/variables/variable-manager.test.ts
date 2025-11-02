@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { VariableManager } from '@/lib/variables/variable-manager'
+import { VariableManager } from '@/variables/variable-manager'
 
 describe('VariableManager', () => {
   describe('parseInputForStorage', () => {

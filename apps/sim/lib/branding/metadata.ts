@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { getBrandConfig } from '@/lib/branding/branding'
-import { getBaseUrl } from '@/lib/urls/utils'
+import { getBrandConfig } from '@/branding/branding'
+import { getBaseUrl } from '@/urls/utils'
 
 /**
  * Generate dynamic metadata based on brand configuration

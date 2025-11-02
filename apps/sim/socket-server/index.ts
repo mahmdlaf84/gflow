@@ -1,6 +1,7 @@
 import { createServer } from 'http'
 import { env } from '@/lib/env'
 import { createLogger } from '@/lib/logs/console/logger'
+import { buildSystemUrl } from '@/lib/urls/utils'
 import { createSocketIOServer } from '@/socket-server/config/socket'
 import { setupAllHandlers } from '@/socket-server/handlers'
 import { type AuthenticatedSocket, authenticateSocket } from '@/socket-server/middleware/auth'
@@ -87,7 +88,7 @@ logger.info('Starting Socket.IO server...', {
 
 httpServer.listen(PORT, '0.0.0.0', () => {
   logger.info(`Socket.IO server running on port ${PORT}`)
-  logger.info(`🏥 Health check available at: http://localhost:${PORT}/health`)
+  logger.info(`🏥 Health check available at: ${buildSystemUrl(String(PORT))}/health`)
 })
 
 httpServer.on('error', (error) => {

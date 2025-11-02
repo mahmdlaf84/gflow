@@ -13,7 +13,7 @@ import {
   isValidName,
   redactApiKeys,
   validateName,
-} from '@/lib/utils'
+} from '@/utils'
 
 vi.mock('crypto', () => ({
   createCipheriv: vi.fn().mockReturnValue({
@@ -33,7 +33,7 @@ vi.mock('crypto', () => ({
   }),
 }))
 
-vi.mock('@/lib/env', () => ({
+vi.mock('@/env', () => ({
   env: {
     ENCRYPTION_KEY: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
   },

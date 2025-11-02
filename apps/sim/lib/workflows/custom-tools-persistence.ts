@@ -1,7 +1,7 @@
 import { db } from '@sim/db'
 import { customTools } from '@sim/db/schema'
 import { eq } from 'drizzle-orm'
-import { createLogger } from '@/lib/logs/console/logger'
+import { createLogger } from '@/logs/console/logger'
 
 const logger = createLogger('CustomToolsPersistence')
 

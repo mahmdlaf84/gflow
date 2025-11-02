@@ -6,9 +6,9 @@ import type {
   ChunkingConfig,
   CreateKnowledgeBaseData,
   KnowledgeBaseWithCounts,
-} from '@/lib/knowledge/types'
-import { createLogger } from '@/lib/logs/console/logger'
-import { getUserEntityPermissions } from '@/lib/permissions/utils'
+} from '@/knowledge/types'
+import { createLogger } from '@/logs/console/logger'
+import { getUserEntityPermissions } from '@/permissions/utils'
 
 const logger = createLogger('KnowledgeBaseService')
 

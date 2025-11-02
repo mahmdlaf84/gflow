@@ -2,8 +2,8 @@ import { db } from '@sim/db'
 import { account, workflow as workflowTable } from '@sim/db/schema'
 import { eq } from 'drizzle-orm'
 import type { NextRequest } from 'next/server'
-import { checkHybridAuth } from '@/lib/auth/hybrid'
-import { getUserEntityPermissions } from '@/lib/permissions/utils'
+import { checkHybridAuth } from '@/auth/hybrid'
+import { getUserEntityPermissions } from '@/permissions/utils'
 
 export interface CredentialAccessResult {
   ok: boolean

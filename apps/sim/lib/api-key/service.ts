@@ -3,9 +3,9 @@ import { db } from '@sim/db'
 import { apiKey as apiKeyTable, workspace } from '@sim/db/schema'
 import { and, eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
-import { authenticateApiKey } from '@/lib/api-key/auth'
-import { env } from '@/lib/env'
-import { createLogger } from '@/lib/logs/console/logger'
+import { authenticateApiKey } from '@/api-key/auth'
+import { env } from '@/env'
+import { createLogger } from '@/logs/console/logger'
 
 const logger = createLogger('ApiKeyService')
 

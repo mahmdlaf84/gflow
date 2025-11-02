@@ -3,8 +3,8 @@ import {
   BaseClientTool,
   type BaseClientToolMetadata,
   ClientToolCallState,
-} from '@/lib/copilot/tools/client/base-tool'
-import { createLogger } from '@/lib/logs/console/logger'
+} from '@/copilot/tools/client/base-tool'
+import { createLogger } from '@/logs/console/logger'
 
 interface MarkTodoInProgressArgs {
   id?: string

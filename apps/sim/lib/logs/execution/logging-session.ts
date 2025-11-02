@@ -1,18 +1,13 @@
-import { BASE_EXECUTION_CHARGE } from '@/lib/billing/constants'
-import { createLogger } from '@/lib/logs/console/logger'
-import { executionLogger } from '@/lib/logs/execution/logger'
+import { BASE_EXECUTION_CHARGE } from '@/billing/constants'
+import { createLogger } from '@/logs/console/logger'
+import { executionLogger } from '@/logs/execution/logger'
 import {
   calculateCostSummary,
   createEnvironmentObject,
   createTriggerObject,
   loadWorkflowStateForExecution,
-} from '@/lib/logs/execution/logging-factory'
-import type {
-  ExecutionEnvironment,
-  ExecutionTrigger,
-  TraceSpan,
-  WorkflowState,
-} from '@/lib/logs/types'
+} from '@/logs/execution/logging-factory'
+import type { ExecutionEnvironment, ExecutionTrigger, TraceSpan, WorkflowState } from '@/logs/types'
 
 const logger = createLogger('LoggingSession')
 
@@ -127,7 +122,7 @@ export class LoggingSession {
       // Track workflow execution outcome
       if (traceSpans && traceSpans.length > 0) {
         try {
-          const { trackPlatformEvent } = await import('@/lib/telemetry/tracer')
+          const { trackPlatformEvent } = await import('@/telemetry/tracer')
 
           // Determine status from trace spans
           const hasErrors = traceSpans.some((span: any) => {
@@ -214,7 +209,7 @@ export class LoggingSession {
 
       // Track workflow execution error outcome
       try {
-        const { trackPlatformEvent } = await import('@/lib/telemetry/tracer')
+        const { trackPlatformEvent } = await import('@/telemetry/tracer')
         trackPlatformEvent('platform.workflow.executed', {
           'workflow.id': this.workflowId,
           'execution.duration_ms': Math.max(1, durationMs),

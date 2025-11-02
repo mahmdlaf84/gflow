@@ -3,10 +3,10 @@
  */
 
 import { encodingForModel, type Tiktoken } from 'js-tiktoken'
-import { createLogger } from '@/lib/logs/console/logger'
-import { MIN_TEXT_LENGTH_FOR_ESTIMATION, TOKENIZATION_CONFIG } from '@/lib/tokenization/constants'
-import type { TokenEstimate } from '@/lib/tokenization/types'
-import { getProviderConfig } from '@/lib/tokenization/utils'
+import { createLogger } from '@/logs/console/logger'
+import { MIN_TEXT_LENGTH_FOR_ESTIMATION, TOKENIZATION_CONFIG } from '@/tokenization/constants'
+import type { TokenEstimate } from '@/tokenization/types'
+import { getProviderConfig } from '@/tokenization/utils'
 
 const logger = createLogger('TokenizationEstimators')
 

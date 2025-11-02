@@ -4,26 +4,26 @@
  * Directory structure: workspace_id/workflow_id/execution_id/filename
  */
 
-import { createLogger } from '@/lib/logs/console/logger'
+import type { UserFile } from '@/executor/types'
+import { createLogger } from '@/logs/console/logger'
 import {
   deleteFromBlob,
   downloadFromBlob,
   getPresignedUrlWithConfig as getBlobPresignedUrlWithConfig,
   uploadToBlob,
-} from '@/lib/uploads/blob/blob-client'
+} from '@/uploads/blob/blob-client'
 import {
   deleteFromS3,
   downloadFromS3,
   getPresignedUrlWithConfig,
   uploadToS3,
-} from '@/lib/uploads/s3/s3-client'
+} from '@/uploads/s3/s3-client'
 import {
   BLOB_EXECUTION_FILES_CONFIG,
   S3_EXECUTION_FILES_CONFIG,
   USE_BLOB_STORAGE,
   USE_S3_STORAGE,
-} from '@/lib/uploads/setup'
-import type { UserFile } from '@/executor/types'
+} from '@/uploads/setup'
 import type { ExecutionContext } from './execution-files'
 import { generateExecutionFileKey, generateFileId, getFileExpirationDate } from './execution-files'
 

@@ -1,7 +1,7 @@
 import fs from 'fs/promises'
 import path from 'path'
-import { generateEmbeddings } from '@/lib/embeddings/utils'
-import { createLogger } from '@/lib/logs/console/logger'
+import { generateEmbeddings } from '@/embeddings/utils'
+import { createLogger } from '@/logs/console/logger'
 import { TextChunker } from './text-chunker'
 import type { DocChunk, DocsChunkerOptions } from './types'
 

@@ -1,17 +1,17 @@
-import type { BaseServerTool } from '@/lib/copilot/tools/server/base-tool'
-import { getBlocksAndToolsServerTool } from '@/lib/copilot/tools/server/blocks/get-blocks-and-tools'
-import { getBlocksMetadataServerTool } from '@/lib/copilot/tools/server/blocks/get-blocks-metadata-tool'
-import { getTriggerBlocksServerTool } from '@/lib/copilot/tools/server/blocks/get-trigger-blocks'
-import { searchDocumentationServerTool } from '@/lib/copilot/tools/server/docs/search-documentation'
-import { listGDriveFilesServerTool } from '@/lib/copilot/tools/server/gdrive/list-files'
-import { readGDriveFileServerTool } from '@/lib/copilot/tools/server/gdrive/read-file'
-import { makeApiRequestServerTool } from '@/lib/copilot/tools/server/other/make-api-request'
-import { searchOnlineServerTool } from '@/lib/copilot/tools/server/other/search-online'
-import { getEnvironmentVariablesServerTool } from '@/lib/copilot/tools/server/user/get-environment-variables'
-import { getOAuthCredentialsServerTool } from '@/lib/copilot/tools/server/user/get-oauth-credentials'
-import { setEnvironmentVariablesServerTool } from '@/lib/copilot/tools/server/user/set-environment-variables'
-import { editWorkflowServerTool } from '@/lib/copilot/tools/server/workflow/edit-workflow'
-import { getWorkflowConsoleServerTool } from '@/lib/copilot/tools/server/workflow/get-workflow-console'
+import type { BaseServerTool } from '@/copilot/tools/server/base-tool'
+import { getBlocksAndToolsServerTool } from '@/copilot/tools/server/blocks/get-blocks-and-tools'
+import { getBlocksMetadataServerTool } from '@/copilot/tools/server/blocks/get-blocks-metadata-tool'
+import { getTriggerBlocksServerTool } from '@/copilot/tools/server/blocks/get-trigger-blocks'
+import { searchDocumentationServerTool } from '@/copilot/tools/server/docs/search-documentation'
+import { listGDriveFilesServerTool } from '@/copilot/tools/server/gdrive/list-files'
+import { readGDriveFileServerTool } from '@/copilot/tools/server/gdrive/read-file'
+import { makeApiRequestServerTool } from '@/copilot/tools/server/other/make-api-request'
+import { searchOnlineServerTool } from '@/copilot/tools/server/other/search-online'
+import { getEnvironmentVariablesServerTool } from '@/copilot/tools/server/user/get-environment-variables'
+import { getOAuthCredentialsServerTool } from '@/copilot/tools/server/user/get-oauth-credentials'
+import { setEnvironmentVariablesServerTool } from '@/copilot/tools/server/user/set-environment-variables'
+import { editWorkflowServerTool } from '@/copilot/tools/server/workflow/edit-workflow'
+import { getWorkflowConsoleServerTool } from '@/copilot/tools/server/workflow/get-workflow-console'
 import {
   ExecuteResponseSuccessSchema,
   GetBlocksAndToolsInput,
@@ -20,8 +20,8 @@ import {
   GetBlocksMetadataResult,
   GetTriggerBlocksInput,
   GetTriggerBlocksResult,
-} from '@/lib/copilot/tools/shared/schemas'
-import { createLogger } from '@/lib/logs/console/logger'
+} from '@/copilot/tools/shared/schemas'
+import { createLogger } from '@/logs/console/logger'
 
 // Generic execute response schemas (success path only for this route; errors handled via HTTP status)
 export { ExecuteResponseSuccessSchema }

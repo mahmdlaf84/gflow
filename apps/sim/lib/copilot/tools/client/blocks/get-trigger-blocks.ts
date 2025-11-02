@@ -3,12 +3,12 @@ import {
   BaseClientTool,
   type BaseClientToolMetadata,
   ClientToolCallState,
-} from '@/lib/copilot/tools/client/base-tool'
+} from '@/copilot/tools/client/base-tool'
 import {
   ExecuteResponseSuccessSchema,
   GetTriggerBlocksResult,
-} from '@/lib/copilot/tools/shared/schemas'
-import { createLogger } from '@/lib/logs/console/logger'
+} from '@/copilot/tools/shared/schemas'
+import { createLogger } from '@/logs/console/logger'
 
 export class GetTriggerBlocksClientTool extends BaseClientTool {
   static readonly id = 'get_trigger_blocks'

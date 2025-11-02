@@ -2,12 +2,12 @@ import { db } from '@sim/db'
 import { account, webhook } from '@sim/db/schema'
 import { and, eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
-import { pollingIdempotency } from '@/lib/idempotency/service'
-import { createLogger } from '@/lib/logs/console/logger'
-import { getBaseUrl } from '@/lib/urls/utils'
 import { getOAuthToken, refreshAccessTokenIfNeeded } from '@/app/api/auth/oauth/utils'
+import { pollingIdempotency } from '@/idempotency/service'
+import { createLogger } from '@/logs/console/logger'
 import type { GmailAttachment } from '@/tools/gmail/types'
 import { downloadAttachments, extractAttachmentInfo } from '@/tools/gmail/utils'
+import { getBaseUrl } from '@/urls/utils'
 
 const logger = createLogger('GmailPollingService')
 

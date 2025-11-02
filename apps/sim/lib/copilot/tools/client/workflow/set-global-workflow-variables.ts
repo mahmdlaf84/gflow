@@ -3,8 +3,8 @@ import {
   BaseClientTool,
   type BaseClientToolMetadata,
   ClientToolCallState,
-} from '@/lib/copilot/tools/client/base-tool'
-import { createLogger } from '@/lib/logs/console/logger'
+} from '@/copilot/tools/client/base-tool'
+import { createLogger } from '@/logs/console/logger'
 import { useVariablesStore } from '@/stores/panel/variables/store'
 import { useWorkflowRegistry } from '@/stores/workflows/registry/store'
 

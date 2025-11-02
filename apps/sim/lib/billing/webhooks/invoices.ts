@@ -2,9 +2,9 @@ import { db } from '@sim/db'
 import { member, subscription as subscriptionTable, userStats } from '@sim/db/schema'
 import { eq, inArray } from 'drizzle-orm'
 import type Stripe from 'stripe'
-import { calculateSubscriptionOverage } from '@/lib/billing/core/billing'
-import { requireStripeClient } from '@/lib/billing/stripe-client'
-import { createLogger } from '@/lib/logs/console/logger'
+import { calculateSubscriptionOverage } from '@/billing/core/billing'
+import { requireStripeClient } from '@/billing/stripe-client'
+import { createLogger } from '@/logs/console/logger'
 
 const logger = createLogger('StripeInvoiceWebhooks')
 

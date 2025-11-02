@@ -3,6 +3,7 @@ import { and, eq } from 'drizzle-orm'
 import type { NextRequest } from 'next/server'
 import { env } from '@/lib/env'
 import { createLogger } from '@/lib/logs/console/logger'
+import { buildSystemUrl } from '@/lib/urls/utils'
 import { generateRequestId } from '@/lib/utils'
 import { saveWorkflowToNormalizedTables } from '@/lib/workflows/db-helpers'
 import { validateWorkflowPermissions } from '@/lib/workflows/utils'
@@ -88,7 +89,7 @@ export async function POST(
       .where(eq(workflow.id, id))
 
     try {
-      const socketServerUrl = env.SOCKET_SERVER_URL || 'http://localhost:3002'
+      const socketServerUrl = env.SOCKET_SERVER_URL || buildSystemUrl('3002')
       await fetch(`${socketServerUrl}/api/workflow-reverted`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

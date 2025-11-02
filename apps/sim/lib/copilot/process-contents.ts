@@ -1,10 +1,10 @@
 import { db } from '@sim/db'
 import { copilotChats, document, knowledgeBase, templates } from '@sim/db/schema'
 import { and, eq, isNull } from 'drizzle-orm'
-import { createLogger } from '@/lib/logs/console/logger'
-import { loadWorkflowFromNormalizedTables } from '@/lib/workflows/db-helpers'
-import { sanitizeForCopilot } from '@/lib/workflows/json-sanitizer'
+import { createLogger } from '@/logs/console/logger'
 import type { ChatContext } from '@/stores/copilot/types'
+import { loadWorkflowFromNormalizedTables } from '@/workflows/db-helpers'
+import { sanitizeForCopilot } from '@/workflows/json-sanitizer'
 
 export type AgentContextType =
   | 'past_chat'
@@ -123,7 +123,7 @@ export async function processContextsServer(
       if (ctx.kind === 'docs') {
         try {
           const { searchDocumentationServerTool } = await import(
-            '@/lib/copilot/tools/server/docs/search-documentation'
+            '@/copilot/tools/server/docs/search-documentation'
           )
           const rawQuery = (userMessage || '').trim() || ctx.label || 'Sim documentation'
           const query = sanitizeMessageForDocs(rawQuery, contexts)

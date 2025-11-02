@@ -1,6 +1,6 @@
-import type { BaseServerTool } from '@/lib/copilot/tools/server/base-tool'
-import { env } from '@/lib/env'
-import { createLogger } from '@/lib/logs/console/logger'
+import type { BaseServerTool } from '@/copilot/tools/server/base-tool'
+import { env } from '@/env'
+import { createLogger } from '@/logs/console/logger'
 import { executeTool } from '@/tools'
 
 interface OnlineSearchParams {

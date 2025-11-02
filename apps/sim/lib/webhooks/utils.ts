@@ -2,8 +2,8 @@ import { db } from '@sim/db'
 import { account, webhook } from '@sim/db/schema'
 import { and, eq } from 'drizzle-orm'
 import { type NextRequest, NextResponse } from 'next/server'
-import { createLogger } from '@/lib/logs/console/logger'
 import { refreshAccessTokenIfNeeded } from '@/app/api/auth/oauth/utils'
+import { createLogger } from '@/logs/console/logger'
 
 const logger = createLogger('WebhookUtils')
 
