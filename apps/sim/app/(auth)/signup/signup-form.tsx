@@ -540,30 +540,31 @@ function SignupFormContent({
         const hasSocial = githubAvailable || googleAvailable
         const hasOnlySSO = ssoEnabled && !emailEnabled && !hasSocial
         const showBottomSection = hasSocial || (ssoEnabled && !hasOnlySSO)
-        return showBottomSection
-      })() && (
-        <div
-          className={cn(
-            inter.className,
-            isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED')) ? 'mt-8' : undefined
-          )}
-        >
-          <SocialLoginButtons
-            githubAvailable={githubAvailable}
-            googleAvailable={googleAvailable}
-            callbackURL={redirectUrl || '/workspace'}
-            isProduction={isProduction}
-          >
-            {isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED')) && (
-              <SSOLoginButton
-                callbackURL={redirectUrl || '/workspace'}
-                variant='outline'
-                primaryClassName={buttonClass}
-              />
+
+        if (!showBottomSection) {
+          return null
+        }
+
+        const showSSOOption = ssoEnabled && !hasOnlySSO
+
+        return (
+          <div
+            className={cn(
+              inter.className,
+              isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED')) ? 'mt-8' : undefined
             )}
-          </SocialLoginButtons>
-        </div>
-      )}
+          >
+            <SocialLoginButtons
+              githubAvailable={githubAvailable}
+              googleAvailable={googleAvailable}
+              callbackURL={redirectUrl || '/workspace'}
+              isProduction={isProduction}
+              showSSOOption={showSSOOption}
+              ssoPrimaryClassName={buttonClass}
+            />
+          </div>
+        )
+      })()}
 
       <div className={`${inter.className} pt-6 text-center font-light text-[14px]`}>
         <span className='font-normal'>Already have an account? </span>

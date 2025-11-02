@@ -1,9 +1,11 @@
 'use client'
 
-import { type ReactNode, useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { GithubIcon, GoogleIcon } from '@/components/icons'
 import { Button } from '@/components/ui/button'
 import { client } from '@/lib/auth-client'
+import { getEnv, isTruthy } from '@/lib/env'
+import { SSOLoginButton } from '@/app/(auth)/components/sso-login-button'
 import { inter } from '@/app/fonts/inter'
 
 interface SocialLoginButtonsProps {
@@ -11,7 +13,14 @@ interface SocialLoginButtonsProps {
   googleAvailable: boolean
   callbackURL?: string
   isProduction: boolean
-  children?: ReactNode
+  /** When true, renders the SSO login option to match other social providers */
+  showSSOOption?: boolean
+  /**
+   * Allows callers to override the SSO button variant when they want to surface
+   * the SSO option alongside the primary action (e.g. when email login is
+   * disabled and SSO should appear as the prominent CTA).
+   */
+  ssoPrimaryClassName?: string
 }
 
 export function SocialLoginButtons({
@@ -19,7 +28,8 @@ export function SocialLoginButtons({
   googleAvailable,
   callbackURL = '/workspace',
   isProduction,
-  children,
+  showSSOOption,
+  ssoPrimaryClassName,
 }: SocialLoginButtonsProps) {
   const [isGithubLoading, setIsGithubLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
@@ -32,6 +42,12 @@ export function SocialLoginButtons({
 
   // Only render on the client side to avoid hydration errors
   if (!mounted) return null
+
+  const ssoEnabled = useMemo(() => {
+    if (typeof window === 'undefined') return false
+    if (typeof showSSOOption === 'boolean') return showSSOOption
+    return isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED'))
+  }, [showSSOOption])
 
   async function signInWithGithub() {
     if (!githubAvailable) return
@@ -81,6 +97,7 @@ export function SocialLoginButtons({
 
   const githubButton = (
     <Button
+      type='button'
       variant='outline'
       className='w-full rounded-[10px] shadow-sm hover:bg-gray-50'
       disabled={!githubAvailable || isGithubLoading}
@@ -93,6 +110,7 @@ export function SocialLoginButtons({
 
   const googleButton = (
     <Button
+      type='button'
       variant='outline'
       className='w-full rounded-[10px] shadow-sm hover:bg-gray-50'
       disabled={!googleAvailable || isGoogleLoading}
@@ -105,7 +123,7 @@ export function SocialLoginButtons({
 
   const hasAnyOAuthProvider = githubAvailable || googleAvailable
 
-  if (!hasAnyOAuthProvider && !children) {
+  if (!hasAnyOAuthProvider && !ssoEnabled) {
     return null
   }
 
@@ -113,7 +131,13 @@ export function SocialLoginButtons({
     <div className={`${inter.className} grid gap-3 font-light`}>
       {googleAvailable && googleButton}
       {githubAvailable && githubButton}
-      {children}
+      {ssoEnabled && (
+        <SSOLoginButton
+          callbackURL={callbackURL}
+          variant={hasAnyOAuthProvider ? 'outline' : 'primary'}
+          primaryClassName={ssoPrimaryClassName}
+        />
+      )}
     </div>
   )
 }
