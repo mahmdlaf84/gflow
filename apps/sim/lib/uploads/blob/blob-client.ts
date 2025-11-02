@@ -5,8 +5,8 @@ import {
   generateBlobSASQueryParameters,
   StorageSharedKeyCredential,
 } from '@azure/storage-blob'
-import { createLogger } from '@/lib/logs/console/logger'
-import { BLOB_CONFIG } from '@/lib/uploads/setup'
+import { createLogger } from '@/logs/console/logger'
+import { BLOB_CONFIG } from '@/uploads/setup'
 
 const logger = createLogger('BlobClient')
 

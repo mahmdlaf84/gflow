@@ -1,7 +1,7 @@
-import { env } from '@/lib/env'
-import { isRetryableError, retryWithExponentialBackoff } from '@/lib/knowledge/documents/utils'
-import { createLogger } from '@/lib/logs/console/logger'
-import { batchByTokenLimit, getTotalTokenCount } from '@/lib/tokenization'
+import { env } from '@/env'
+import { isRetryableError, retryWithExponentialBackoff } from '@/knowledge/documents/utils'
+import { createLogger } from '@/logs/console/logger'
+import { batchByTokenLimit, getTotalTokenCount } from '@/tokenization'
 
 const logger = createLogger('EmbeddingUtils')
 

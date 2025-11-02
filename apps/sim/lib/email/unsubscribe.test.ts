@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { EmailType } from '@/lib/email/mailer'
+import type { EmailType } from '@/email/mailer'
 import {
   generateUnsubscribeToken,
   isTransactionalEmail,
   verifyUnsubscribeToken,
-} from '@/lib/email/unsubscribe'
+} from '@/email/unsubscribe'
 
-vi.mock('@/lib/env', () => ({
+vi.mock('@/env', () => ({
   env: {
     BETTER_AUTH_SECRET: 'test-secret-key',
   },

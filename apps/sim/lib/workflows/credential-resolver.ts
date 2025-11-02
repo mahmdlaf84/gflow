@@ -1,9 +1,9 @@
-import { createLogger } from '@/lib/logs/console/logger'
-import { getProviderIdFromServiceId, getServiceIdFromScopes } from '@/lib/oauth/oauth'
-import { buildSystemUrl } from '@/lib/urls/utils'
 import { getBlock } from '@/blocks/index'
 import type { SubBlockConfig } from '@/blocks/types'
+import { createLogger } from '@/logs/console/logger'
+import { getProviderIdFromServiceId, getServiceIdFromScopes } from '@/oauth/oauth'
 import type { BlockState } from '@/stores/workflows/workflow/types'
+import { buildSystemUrl } from '@/urls/utils'
 
 const logger = createLogger('CredentialResolver')
 

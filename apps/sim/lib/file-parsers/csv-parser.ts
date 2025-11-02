@@ -1,9 +1,9 @@
 import { createReadStream, existsSync } from 'fs'
 import { Readable } from 'stream'
 import { type Options, parse } from 'csv-parse'
-import type { FileParseResult, FileParser } from '@/lib/file-parsers/types'
-import { sanitizeTextForUTF8 } from '@/lib/file-parsers/utils'
-import { createLogger } from '@/lib/logs/console/logger'
+import type { FileParseResult, FileParser } from '@/file-parsers/types'
+import { sanitizeTextForUTF8 } from '@/file-parsers/utils'
+import { createLogger } from '@/logs/console/logger'
 
 const logger = createLogger('CsvParser')
 

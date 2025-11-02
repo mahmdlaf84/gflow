@@ -2,9 +2,9 @@ import { db } from '@sim/db'
 import { workflowLogWebhook, workflowLogWebhookDelivery } from '@sim/db/schema'
 import { and, eq } from 'drizzle-orm'
 import { v4 as uuidv4 } from 'uuid'
-import { createLogger } from '@/lib/logs/console/logger'
-import type { WorkflowExecutionLog } from '@/lib/logs/types'
 import { logsWebhookDelivery } from '@/background/logs-webhook-delivery'
+import { createLogger } from '@/logs/console/logger'
+import type { WorkflowExecutionLog } from '@/logs/types'
 
 const logger = createLogger('LogsEventEmitter')
 

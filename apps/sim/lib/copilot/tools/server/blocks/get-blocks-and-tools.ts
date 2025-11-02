@@ -1,11 +1,11 @@
-import type { BaseServerTool } from '@/lib/copilot/tools/server/base-tool'
+import { registry as blockRegistry } from '@/blocks/registry'
+import type { BlockConfig } from '@/blocks/types'
+import type { BaseServerTool } from '@/copilot/tools/server/base-tool'
 import {
   type GetBlocksAndToolsInput,
   GetBlocksAndToolsResult,
-} from '@/lib/copilot/tools/shared/schemas'
-import { createLogger } from '@/lib/logs/console/logger'
-import { registry as blockRegistry } from '@/blocks/registry'
-import type { BlockConfig } from '@/blocks/types'
+} from '@/copilot/tools/shared/schemas'
+import { createLogger } from '@/logs/console/logger'
 
 export const getBlocksAndToolsServerTool: BaseServerTool<
   ReturnType<typeof GetBlocksAndToolsInput.parse>,

@@ -3,7 +3,7 @@ import {
   BaseClientTool,
   type BaseClientToolMetadata,
   ClientToolCallState,
-} from '@/lib/copilot/tools/client/base-tool'
+} from '@/copilot/tools/client/base-tool'
 
 export class GetOperationsExamplesClientTool extends BaseClientTool {
   static readonly id = 'get_operations_examples'

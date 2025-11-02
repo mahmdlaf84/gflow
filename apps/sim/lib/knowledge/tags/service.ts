@@ -6,14 +6,14 @@ import {
   getSlotsForFieldType,
   SUPPORTED_FIELD_TYPES,
   type TAG_SLOT_CONFIG,
-} from '@/lib/knowledge/consts'
-import type { BulkTagDefinitionsData, DocumentTagDefinition } from '@/lib/knowledge/tags/types'
+} from '@/knowledge/consts'
+import type { BulkTagDefinitionsData, DocumentTagDefinition } from '@/knowledge/tags/types'
 import type {
   CreateTagDefinitionData,
   TagDefinition,
   UpdateTagDefinitionData,
-} from '@/lib/knowledge/types'
-import { createLogger } from '@/lib/logs/console/logger'
+} from '@/knowledge/types'
+import { createLogger } from '@/logs/console/logger'
 
 const logger = createLogger('TagsService')
 

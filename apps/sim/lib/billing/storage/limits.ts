@@ -12,8 +12,8 @@ import {
 } from '@sim/db/consts'
 import { organization, subscription, userStats } from '@sim/db/schema'
 import { eq } from 'drizzle-orm'
-import { getEnv } from '@/lib/env'
-import { createLogger } from '@/lib/logs/console/logger'
+import { getEnv } from '@/env'
+import { createLogger } from '@/logs/console/logger'
 
 const logger = createLogger('StorageLimits')
 
@@ -79,7 +79,7 @@ export function getStorageLimitForPlan(plan: string, metadata?: any): number {
 export async function getUserStorageLimit(userId: string): Promise<number> {
   try {
     // Check if user is in a team/enterprise org
-    const { getHighestPrioritySubscription } = await import('@/lib/billing/core/subscription')
+    const { getHighestPrioritySubscription } = await import('@/billing/core/subscription')
     const sub = await getHighestPrioritySubscription(userId)
 
     const limits = getStorageLimits()
@@ -126,7 +126,7 @@ export async function getUserStorageLimit(userId: string): Promise<number> {
 export async function getUserStorageUsage(userId: string): Promise<number> {
   try {
     // Check if user is in a team/enterprise org
-    const { getHighestPrioritySubscription } = await import('@/lib/billing/core/subscription')
+    const { getHighestPrioritySubscription } = await import('@/billing/core/subscription')
     const sub = await getHighestPrioritySubscription(userId)
 
     if (sub && (sub.plan === 'team' || sub.plan === 'enterprise')) {

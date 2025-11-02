@@ -5,7 +5,7 @@
  * It is separate from the user-facing logging system in logging.ts.
  */
 import chalk from 'chalk'
-import { env } from '@/lib/env'
+import { env } from '@/env'
 
 /**
  * LogLevel enum defines the severity levels for logging
@@ -285,7 +285,7 @@ export class Logger {
  *
  * Usage example:
  * ```
- * import { createLogger } from '@/lib/logger'
+ * import { createLogger } from '@/logger'
  *
  * const logger = createLogger('MyComponent')
  *

@@ -1,7 +1,7 @@
-import { createLogger } from '@/lib/logs/console/logger'
-import type { ToolCall, TraceSpan } from '@/lib/logs/types'
 import { isWorkflowBlockType } from '@/executor/consts'
 import type { ExecutionResult } from '@/executor/types'
+import { createLogger } from '@/logs/console/logger'
+import type { ToolCall, TraceSpan } from '@/logs/types'
 
 const logger = createLogger('TraceSpans')
 

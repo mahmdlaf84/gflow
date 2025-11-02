@@ -1,5 +1,5 @@
-import type { BaseClientToolMetadata } from '@/lib/copilot/tools/client/base-tool'
-import { ClientToolCallState } from '@/lib/copilot/tools/client/base-tool'
+import type { BaseClientToolMetadata } from '@/copilot/tools/client/base-tool'
+import { ClientToolCallState } from '@/copilot/tools/client/base-tool'
 
 export interface ToolExecutionContext {
   toolCallId: string

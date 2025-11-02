@@ -1,6 +1,6 @@
-import { createLogger } from '@/lib/logs/console/logger'
-import { encodeSSE } from '@/lib/utils'
 import type { ExecutionResult } from '@/executor/types'
+import { createLogger } from '@/logs/console/logger'
+import { encodeSSE } from '@/utils'
 
 const logger = createLogger('WorkflowStreaming')
 
@@ -105,7 +105,7 @@ export async function createStreamingResponse(
           if (!streamConfig.selectedOutputs?.length) return
 
           const { extractBlockIdFromOutputId, extractPathFromOutputId, traverseObjectPath } =
-            await import('@/lib/response-format')
+            await import('@/response-format')
 
           const matchingOutputs = streamConfig.selectedOutputs.filter(
             (outputId) => extractBlockIdFromOutputId(outputId) === blockId
@@ -166,13 +166,13 @@ export async function createStreamingResponse(
             return log
           })
 
-          const { processStreamingBlockLogs } = await import('@/lib/tokenization')
+          const { processStreamingBlockLogs } = await import('@/tokenization')
           processStreamingBlockLogs(result.logs, streamedContent)
         }
 
         // Complete the logging session with updated trace spans that include cost data
         if (result._streamingMetadata?.loggingSession) {
-          const { buildTraceSpans } = await import('@/lib/logs/execution/trace-spans/trace-spans')
+          const { buildTraceSpans } = await import('@/logs/execution/trace-spans/trace-spans')
           const { traceSpans, totalDuration } = buildTraceSpans(result)
 
           await result._streamingMetadata.loggingSession.safeComplete({
@@ -195,7 +195,7 @@ export async function createStreamingResponse(
 
         if (streamConfig.selectedOutputs?.length && result.output) {
           const { extractBlockIdFromOutputId, extractPathFromOutputId, traverseObjectPath } =
-            await import('@/lib/response-format')
+            await import('@/response-format')
 
           for (const outputId of streamConfig.selectedOutputs) {
             const blockId = extractBlockIdFromOutputId(outputId)

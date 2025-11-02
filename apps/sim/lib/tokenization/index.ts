@@ -2,9 +2,9 @@ export {
   calculateStreamingCost,
   calculateTokenizationCost,
   createCostResultFromProviderData,
-} from '@/lib/tokenization/calculators'
-export { LLM_BLOCK_TYPES, TOKENIZATION_CONFIG } from '@/lib/tokenization/constants'
-export { createTokenizationError, TokenizationError } from '@/lib/tokenization/errors'
+} from '@/tokenization/calculators'
+export { LLM_BLOCK_TYPES, TOKENIZATION_CONFIG } from '@/tokenization/constants'
+export { createTokenizationError, TokenizationError } from '@/tokenization/errors'
 export {
   batchByTokenLimit,
   clearEncodingCache,
@@ -15,8 +15,8 @@ export {
   getTokenCountsForBatch,
   getTotalTokenCount,
   truncateToTokenLimit,
-} from '@/lib/tokenization/estimators'
-export { processStreamingBlockLog, processStreamingBlockLogs } from '@/lib/tokenization/streaming'
+} from '@/tokenization/estimators'
+export { processStreamingBlockLog, processStreamingBlockLogs } from '@/tokenization/streaming'
 export type {
   CostBreakdown,
   ProviderTokenizationConfig,
@@ -24,7 +24,7 @@ export type {
   TokenEstimate,
   TokenizationInput,
   TokenUsage,
-} from '@/lib/tokenization/types'
+} from '@/tokenization/types'
 export {
   createTextPreview,
   extractTextContent,
@@ -36,4 +36,4 @@ export {
   isTokenizableBlockType,
   logTokenizationDetails,
   validateTokenizationInput,
-} from '@/lib/tokenization/utils'
+} from '@/tokenization/utils'

@@ -7,11 +7,11 @@ import {
   checkTeamPlan,
   getFreeTierLimit,
   getPerUserMinimumLimit,
-} from '@/lib/billing/subscriptions/utils'
-import type { UserSubscriptionState } from '@/lib/billing/types'
-import { isProd } from '@/lib/environment'
-import { createLogger } from '@/lib/logs/console/logger'
-import { getBaseUrl } from '@/lib/urls/utils'
+} from '@/billing/subscriptions/utils'
+import type { UserSubscriptionState } from '@/billing/types'
+import { isProd } from '@/environment'
+import { createLogger } from '@/logs/console/logger'
+import { getBaseUrl } from '@/urls/utils'
 
 const logger = createLogger('SubscriptionCore')
 
@@ -160,7 +160,7 @@ export async function hasExceededCostLimit(userId: string): Promise<boolean> {
     if (subscription) {
       // Team/Enterprise: Use organization limit
       if (subscription.plan === 'team' || subscription.plan === 'enterprise') {
-        const { getUserUsageLimit } = await import('@/lib/billing/core/usage')
+        const { getUserUsageLimit } = await import('@/billing/core/usage')
         limit = await getUserUsageLimit(userId)
         logger.info('Using organization limit', {
           userId,
@@ -244,7 +244,7 @@ export async function getUserSubscriptionState(userId: string): Promise<UserSubs
       if (subscription) {
         // Team/Enterprise: Use organization limit
         if (subscription.plan === 'team' || subscription.plan === 'enterprise') {
-          const { getUserUsageLimit } = await import('@/lib/billing/core/usage')
+          const { getUserUsageLimit } = await import('@/billing/core/usage')
           limit = await getUserUsageLimit(userId)
         } else {
           // Pro/Free: Use individual limit
@@ -301,7 +301,7 @@ export async function sendPlanWelcomeEmail(subscription: any): Promise<void> {
         const { getEmailSubject, renderPlanWelcomeEmail } = await import(
           '@/components/emails/render-email'
         )
-        const { sendEmail } = await import('@/lib/email/mailer')
+        const { sendEmail } = await import('@/email/mailer')
 
         const baseUrl = getBaseUrl()
         const html = await renderPlanWelcomeEmail({

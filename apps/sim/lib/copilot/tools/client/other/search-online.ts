@@ -3,9 +3,9 @@ import {
   BaseClientTool,
   type BaseClientToolMetadata,
   ClientToolCallState,
-} from '@/lib/copilot/tools/client/base-tool'
-import { ExecuteResponseSuccessSchema } from '@/lib/copilot/tools/shared/schemas'
-import { createLogger } from '@/lib/logs/console/logger'
+} from '@/copilot/tools/client/base-tool'
+import { ExecuteResponseSuccessSchema } from '@/copilot/tools/shared/schemas'
+import { createLogger } from '@/logs/console/logger'
 
 interface SearchOnlineArgs {
   query: string

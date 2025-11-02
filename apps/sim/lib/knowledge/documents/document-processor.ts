@@ -1,16 +1,16 @@
-import { type Chunk, JsonYamlChunker, StructuredDataChunker, TextChunker } from '@/lib/chunkers'
-import { env } from '@/lib/env'
-import { parseBuffer, parseFile } from '@/lib/file-parsers'
-import { retryWithExponentialBackoff } from '@/lib/knowledge/documents/utils'
-import { createLogger } from '@/lib/logs/console/logger'
+import { type Chunk, JsonYamlChunker, StructuredDataChunker, TextChunker } from '@/chunkers'
+import { env } from '@/env'
+import { parseBuffer, parseFile } from '@/file-parsers'
+import { retryWithExponentialBackoff } from '@/knowledge/documents/utils'
+import { createLogger } from '@/logs/console/logger'
+import { mistralParserTool } from '@/tools/mistral/parser'
 import {
   type CustomStorageConfig,
   getPresignedUrlWithConfig,
   getStorageProvider,
   uploadFile,
-} from '@/lib/uploads'
-import { BLOB_KB_CONFIG, S3_KB_CONFIG } from '@/lib/uploads/setup'
-import { mistralParserTool } from '@/tools/mistral/parser'
+} from '@/uploads'
+import { BLOB_KB_CONFIG, S3_KB_CONFIG } from '@/uploads/setup'
 
 const logger = createLogger('DocumentProcessor')
 
@@ -213,7 +213,7 @@ async function downloadFileWithTimeout(fileUrl: string): Promise<Buffer> {
     const headers: HeadersInit = {}
 
     if (isInternalFileServe) {
-      const { generateInternalToken } = await import('@/lib/auth/internal')
+      const { generateInternalToken } = await import('@/auth/internal')
       const token = await generateInternalToken()
       headers.Authorization = `Bearer ${token}`
     }
@@ -413,7 +413,7 @@ async function parseWithMistralOCR(fileUrl: string, filename: string, mimeType: 
             : mistralParserTool.request!.url
 
         if (url.startsWith('/')) {
-          const { getBaseUrl } = await import('@/lib/urls/utils')
+          const { getBaseUrl } = await import('@/urls/utils')
           url = `${getBaseUrl()}${url}`
         }
 
@@ -423,7 +423,7 @@ async function parseWithMistralOCR(fileUrl: string, filename: string, mimeType: 
             : mistralParserTool.request!.headers
 
         if (url.includes('/api/tools/mistral/parse')) {
-          const { generateInternalToken } = await import('@/lib/auth/internal')
+          const { generateInternalToken } = await import('@/auth/internal')
           const internalToken = await generateInternalToken()
           headers = {
             ...headers,

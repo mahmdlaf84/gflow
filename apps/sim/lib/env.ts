@@ -1,7 +1,7 @@
 import { createEnv } from '@t3-oss/env-nextjs'
 import { env as runtimeEnv } from 'next-runtime-env'
 import { z } from 'zod'
-import { buildSystemUrl, getSystemIPAddress } from '@/lib/network'
+import { buildSystemUrl, getSystemIPAddress } from '@/network'
 
 /**
  * Universal environment variable getter that works in both client and server contexts.

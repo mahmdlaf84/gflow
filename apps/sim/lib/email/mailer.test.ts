@@ -26,12 +26,12 @@ vi.mock('@azure/communication-email', () => {
   }
 })
 
-vi.mock('@/lib/email/unsubscribe', () => ({
+vi.mock('@/email/unsubscribe', () => ({
   isUnsubscribed: vi.fn(),
   generateUnsubscribeToken: vi.fn(),
 }))
 
-vi.mock('@/lib/env', () => ({
+vi.mock('@/env', () => ({
   env: {
     RESEND_API_KEY: 'test-api-key',
     AZURE_ACS_CONNECTION_STRING: 'test-azure-connection-string',
@@ -41,13 +41,13 @@ vi.mock('@/lib/env', () => ({
   },
 }))
 
-vi.mock('@/lib/urls/utils', () => ({
+vi.mock('@/urls/utils', () => ({
   getEmailDomain: vi.fn().mockReturnValue('sim.ai'),
   getBaseUrl: vi.fn().mockReturnValue('https://test.sim.ai'),
 }))
 
-import { type EmailType, sendBatchEmails, sendEmail } from '@/lib/email/mailer'
-import { generateUnsubscribeToken, isUnsubscribed } from '@/lib/email/unsubscribe'
+import { type EmailType, sendBatchEmails, sendEmail } from '@/email/mailer'
+import { generateUnsubscribeToken, isUnsubscribed } from '@/email/unsubscribe'
 
 describe('mailer', () => {
   const testEmailOptions = {

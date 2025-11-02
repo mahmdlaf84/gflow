@@ -1,5 +1,5 @@
-import { env } from '@/lib/env'
-import { getEmailDomain } from '@/lib/urls/utils'
+import { env } from '@/env'
+import { getEmailDomain } from '@/urls/utils'
 
 /**
  * Get the from email address, preferring FROM_EMAIL_ADDRESS over EMAIL_DOMAIN

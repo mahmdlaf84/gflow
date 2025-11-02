@@ -1,8 +1,8 @@
-import { getEnv } from '@/lib/env'
-import { isProd } from '@/lib/environment'
-import { buildSystemUrl, getSystemIPAddress } from '@/lib/network'
+import { getEnv } from '@/env'
+import { isProd } from '@/environment'
+import { buildSystemUrl, getSystemIPAddress } from '@/network'
 
-export { buildSystemUrl, getSystemIPAddress } from '@/lib/network'
+export { buildSystemUrl, getSystemIPAddress } from '@/network'
 
 const LOCAL_HOSTNAME_PATTERNS = [
   'localhost',
