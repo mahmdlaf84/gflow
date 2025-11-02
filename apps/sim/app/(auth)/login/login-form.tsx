@@ -370,10 +370,11 @@ export default function LoginPage({
 
   const ssoEnabled = isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED'))
   const emailEnabled = !isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED'))
-  const hasSocial = githubAvailable || googleAvailable
-  const hasOnlySSO = ssoEnabled && !emailEnabled && !hasSocial
+  const hasOAuthProviders = githubAvailable || googleAvailable
+  const hasAnyFederatedLogin = hasOAuthProviders || ssoEnabled
+  const hasOnlySSO = ssoEnabled && !emailEnabled && !hasOAuthProviders
   const showTopSSO = hasOnlySSO
-  const showBottomSection = hasSocial || (ssoEnabled && !hasOnlySSO)
+  const showBottomSection = hasAnyFederatedLogin && (!hasOnlySSO || emailEnabled)
   const showDivider = (emailEnabled || showTopSSO) && showBottomSection
 
   return (
@@ -507,17 +508,12 @@ export default function LoginPage({
           <SocialLoginButtons
             googleAvailable={googleAvailable}
             githubAvailable={githubAvailable}
+            ssoEnabled={ssoEnabled}
             isProduction={isProduction}
             callbackURL={callbackUrl}
-          >
-            {ssoEnabled && !hasOnlySSO && (
-              <SSOLoginButton
-                callbackURL={callbackUrl}
-                variant='outline'
-                primaryClassName={buttonClass}
-              />
-            )}
-          </SocialLoginButtons>
+            ssoLabel='Sign in with SSO'
+            flow='sign-in'
+          />
         </div>
       )}
 

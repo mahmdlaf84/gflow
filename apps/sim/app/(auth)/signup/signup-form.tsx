@@ -101,6 +101,14 @@ function SignupFormContent({
   const [nameErrors, setNameErrors] = useState<string[]>([])
   const [showNameValidationError, setShowNameValidationError] = useState(false)
 
+  const ssoEnabled = isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED'))
+  const emailEnabled = !isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED'))
+  const hasOAuthProviders = githubAvailable || googleAvailable
+  const hasAnyFederatedLogin = hasOAuthProviders || ssoEnabled
+  const hasOnlySSO = ssoEnabled && !emailEnabled && !hasOAuthProviders
+  const showBottomSection = hasAnyFederatedLogin && (!hasOnlySSO || emailEnabled)
+  const showDivider = (emailEnabled || hasOnlySSO) && showBottomSection
+
   useEffect(() => {
     setMounted(true)
     const emailParam = searchParams.get('email')
@@ -382,18 +390,13 @@ function SignupFormContent({
       </div>
 
       {/* SSO Login Button (primary top-only when it is the only method) */}
-      {(() => {
-        const ssoEnabled = isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED'))
-        const emailEnabled = !isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED'))
-        const hasSocial = githubAvailable || googleAvailable
-        const hasOnlySSO = ssoEnabled && !emailEnabled && !hasSocial
-        return hasOnlySSO
-      })() && (
+      {hasOnlySSO && (
         <div className={`${inter.className} mt-8`}>
           <SSOLoginButton
             callbackURL={redirectUrl || '/workspace'}
             variant='primary'
             primaryClassName={buttonClass}
+            label='Sign up with SSO'
           />
         </div>
       )}
@@ -515,15 +518,7 @@ function SignupFormContent({
       )}
 
       {/* Divider - show when we have multiple auth methods */}
-      {(() => {
-        const ssoEnabled = isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED'))
-        const emailEnabled = !isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED'))
-        const hasSocial = githubAvailable || googleAvailable
-        const hasOnlySSO = ssoEnabled && !emailEnabled && !hasSocial
-        const showBottomSection = hasSocial || (ssoEnabled && !hasOnlySSO)
-        const showDivider = (emailEnabled || hasOnlySSO) && showBottomSection
-        return showDivider
-      })() && (
+      {showDivider && (
         <div className={`${inter.className} relative my-6 font-light`}>
           <div className='absolute inset-0 flex items-center'>
             <div className='auth-divider w-full border-t' />
@@ -534,14 +529,7 @@ function SignupFormContent({
         </div>
       )}
 
-      {(() => {
-        const ssoEnabled = isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED'))
-        const emailEnabled = !isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED'))
-        const hasSocial = githubAvailable || googleAvailable
-        const hasOnlySSO = ssoEnabled && !emailEnabled && !hasSocial
-        const showBottomSection = hasSocial || (ssoEnabled && !hasOnlySSO)
-        return showBottomSection
-      })() && (
+      {showBottomSection && (
         <div
           className={cn(
             inter.className,
@@ -553,15 +541,10 @@ function SignupFormContent({
             googleAvailable={googleAvailable}
             callbackURL={redirectUrl || '/workspace'}
             isProduction={isProduction}
-          >
-            {isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED')) && (
-              <SSOLoginButton
-                callbackURL={redirectUrl || '/workspace'}
-                variant='outline'
-                primaryClassName={buttonClass}
-              />
-            )}
-          </SocialLoginButtons>
+            ssoEnabled={ssoEnabled}
+            ssoLabel='Sign up with SSO'
+            flow='sign-up'
+          />
         </div>
       )}
 

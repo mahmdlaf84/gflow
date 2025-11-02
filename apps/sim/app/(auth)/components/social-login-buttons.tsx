@@ -4,22 +4,31 @@ import { type ReactNode, useEffect, useState } from 'react'
 import { GithubIcon, GoogleIcon } from '@/components/icons'
 import { Button } from '@/components/ui/button'
 import { client } from '@/lib/auth-client'
+import { SSOLoginButton } from '@/app/(auth)/components/sso-login-button'
 import { inter } from '@/app/fonts/inter'
+
+type AuthFlow = 'sign-in' | 'sign-up'
 
 interface SocialLoginButtonsProps {
   githubAvailable: boolean
   googleAvailable: boolean
+  ssoEnabled?: boolean
   callbackURL?: string
   isProduction: boolean
+  ssoLabel?: string
   children?: ReactNode
+  flow?: AuthFlow
 }
 
 export function SocialLoginButtons({
   githubAvailable,
   googleAvailable,
+  ssoEnabled = false,
   callbackURL = '/workspace',
   isProduction,
+  ssoLabel,
   children,
+  flow = 'sign-in',
 }: SocialLoginButtonsProps) {
   const [isGithubLoading, setIsGithubLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
@@ -33,12 +42,36 @@ export function SocialLoginButtons({
   // Only render on the client side to avoid hydration errors
   if (!mounted) return null
 
+  const isSignUpFlow = flow === 'sign-up'
+
+  const buildErrorCallbackUrl = () => {
+    const basePath = isSignUpFlow ? '/signup' : '/login'
+    const params = new URLSearchParams()
+    if (callbackURL) {
+      params.set('callbackUrl', callbackURL)
+    }
+    if (isSignUpFlow) {
+      params.set('requestSignUp', 'true')
+    }
+    return params.size > 0 ? `${basePath}?${params.toString()}` : basePath
+  }
+
   async function signInWithGithub() {
     if (!githubAvailable) return
 
     setIsGithubLoading(true)
     try {
-      await client.signIn.social({ provider: 'github', callbackURL })
+      await client.signIn.social({
+        provider: 'github',
+        callbackURL,
+        ...(isSignUpFlow
+          ? {
+              requestSignUp: true,
+              newUserCallbackURL: callbackURL,
+            }
+          : {}),
+        errorCallbackURL: buildErrorCallbackUrl(),
+      })
     } catch (err: any) {
       let errorMessage = 'Failed to sign in with GitHub'
 
@@ -61,7 +94,17 @@ export function SocialLoginButtons({
 
     setIsGoogleLoading(true)
     try {
-      await client.signIn.social({ provider: 'google', callbackURL })
+      await client.signIn.social({
+        provider: 'google',
+        callbackURL,
+        ...(isSignUpFlow
+          ? {
+              requestSignUp: true,
+              newUserCallbackURL: callbackURL,
+            }
+          : {}),
+        errorCallbackURL: buildErrorCallbackUrl(),
+      })
     } catch (err: any) {
       let errorMessage = 'Failed to sign in with Google'
 
@@ -103,7 +146,7 @@ export function SocialLoginButtons({
     </Button>
   )
 
-  const hasAnyOAuthProvider = githubAvailable || googleAvailable
+  const hasAnyOAuthProvider = githubAvailable || googleAvailable || ssoEnabled
 
   if (!hasAnyOAuthProvider && !children) {
     return null
@@ -113,6 +156,14 @@ export function SocialLoginButtons({
     <div className={`${inter.className} grid gap-3 font-light`}>
       {googleAvailable && googleButton}
       {githubAvailable && githubButton}
+      {ssoEnabled && (
+        <SSOLoginButton
+          callbackURL={callbackURL}
+          variant='outline'
+          label={ssoLabel}
+          requestSignUp={isSignUpFlow}
+        />
+      )}
       {children}
     </div>
   )

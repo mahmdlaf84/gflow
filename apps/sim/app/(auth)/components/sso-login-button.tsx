@@ -14,6 +14,8 @@ interface SSOLoginButtonProps {
   variant?: 'primary' | 'outline'
   // Optional class used when variant is primary to match brand/gradient
   primaryClassName?: string
+  label?: string
+  requestSignUp?: boolean
 }
 
 export function SSOLoginButton({
@@ -21,6 +23,8 @@ export function SSOLoginButton({
   className,
   variant = 'outline',
   primaryClassName,
+  label = 'Sign in with SSO',
+  requestSignUp = false,
 }: SSOLoginButtonProps) {
   const router = useRouter()
 
@@ -29,7 +33,16 @@ export function SSOLoginButton({
   }
 
   const handleSSOClick = () => {
-    const ssoUrl = `/sso${callbackURL ? `?callbackUrl=${encodeURIComponent(callbackURL)}` : ''}`
+    const params = new URLSearchParams()
+    if (callbackURL) {
+      params.set('callbackUrl', callbackURL)
+    }
+    if (requestSignUp) {
+      params.set('requestSignUp', 'true')
+    }
+
+    const query = params.toString()
+    const ssoUrl = `/sso${query ? `?${query}` : ''}`
     router.push(ssoUrl)
   }
 
@@ -47,7 +60,7 @@ export function SSOLoginButton({
       variant={variant === 'outline' ? 'outline' : undefined}
       className={cn(variant === 'outline' ? outlineBtnClasses : primaryBtnClasses, className)}
     >
-      Sign in with SSO
+      {label}
     </Button>
   )
 }
