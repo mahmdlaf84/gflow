@@ -9,11 +9,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { client, useSession } from '@/lib/auth-client'
 import { quickValidateEmail } from '@/lib/email/validation'
-import { getEnv, isFalsy, isTruthy } from '@/lib/env'
+import { getEnv, isFalsy } from '@/lib/env'
 import { createLogger } from '@/lib/logs/console/logger'
 import { cn } from '@/lib/utils'
 import { SocialLoginButtons } from '@/app/(auth)/components/social-login-buttons'
-import { SSOLoginButton } from '@/app/(auth)/components/sso-login-button'
 import { inter } from '@/app/fonts/inter'
 import { soehne } from '@/app/fonts/soehne/soehne'
 
@@ -71,17 +70,7 @@ const validateEmailField = (emailValue: string): string[] => {
   return errors
 }
 
-function SignupFormContent({
-  githubAvailable,
-  googleAvailable,
-  isProduction,
-  ssoEnabled,
-}: {
-  githubAvailable: boolean
-  googleAvailable: boolean
-  isProduction: boolean
-  ssoEnabled?: boolean
-}) {
+function SignupFormContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { refetch: refetchSession } = useSession()
@@ -103,14 +92,8 @@ function SignupFormContent({
   const [nameErrors, setNameErrors] = useState<string[]>([])
   const [showNameValidationError, setShowNameValidationError] = useState(false)
 
-  const resolvedSsoEnabled =
-    typeof ssoEnabled === 'boolean' ? ssoEnabled : isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED'))
   const emailEnabled = !isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED'))
-  const hasOAuthProviders = githubAvailable || googleAvailable
-  const hasAnyFederatedLogin = hasOAuthProviders || resolvedSsoEnabled
-  const hasOnlySSO = resolvedSsoEnabled && !emailEnabled && !hasOAuthProviders
-  const showBottomSection = hasAnyFederatedLogin && (!hasOnlySSO || emailEnabled)
-  const showDivider = (emailEnabled || hasOnlySSO) && showBottomSection
+  const shouldShowDivider = emailEnabled
 
   useEffect(() => {
     setMounted(true)
@@ -392,19 +375,6 @@ function SignupFormContent({
         </p>
       </div>
 
-      {/* SSO Login Button (primary top-only when it is the only method) */}
-      {hasOnlySSO && (
-        <div className={`${inter.className} mt-8`}>
-          <SSOLoginButton
-            callbackURL={redirectUrl || '/workspace'}
-            variant='primary'
-            primaryClassName={buttonClass}
-            label='Sign up with SSO'
-            enabled={resolvedSsoEnabled}
-          />
-        </div>
-      )}
-
       {/* Email/Password Form - show unless explicitly disabled */}
       {!isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED')) && (
         <form onSubmit={onSubmit} className={`${inter.className} mt-8 space-y-8`}>
@@ -522,7 +492,7 @@ function SignupFormContent({
       )}
 
       {/* Divider - show when we have multiple auth methods */}
-      {showDivider && (
+      {shouldShowDivider && (
         <div className={`${inter.className} relative my-6 font-light`}>
           <div className='absolute inset-0 flex items-center'>
             <div className='auth-divider w-full border-t' />
@@ -533,24 +503,18 @@ function SignupFormContent({
         </div>
       )}
 
-      {showBottomSection && (
-        <div
-          className={cn(
-            inter.className,
-            isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED')) ? 'mt-8' : undefined
-          )}
-        >
-          <SocialLoginButtons
-            githubAvailable={githubAvailable}
-            googleAvailable={googleAvailable}
-            callbackURL={redirectUrl || '/workspace'}
-            isProduction={isProduction}
-            ssoEnabled={resolvedSsoEnabled}
-            ssoLabel='Sign up with SSO'
-            flow='sign-up'
-          />
-        </div>
-      )}
+      <div
+        className={cn(
+          inter.className,
+          isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED')) ? 'mt-8' : undefined
+        )}
+      >
+        <SocialLoginButtons
+          callbackURL={redirectUrl || '/workspace'}
+          ssoLabel='Sign up with SSO'
+          flow='sign-up'
+        />
+      </div>
 
       <div className={`${inter.className} pt-6 text-center font-light text-[14px]`}>
         <span className='font-normal'>Already have an account? </span>
@@ -588,27 +552,12 @@ function SignupFormContent({
   )
 }
 
-export default function SignupPage({
-  githubAvailable,
-  googleAvailable,
-  isProduction,
-  ssoEnabled,
-}: {
-  githubAvailable: boolean
-  googleAvailable: boolean
-  isProduction: boolean
-  ssoEnabled?: boolean
-}) {
+export default function SignupForm() {
   return (
     <Suspense
       fallback={<div className='flex h-screen items-center justify-center'>Loading...</div>}
     >
-      <SignupFormContent
-        githubAvailable={githubAvailable}
-        googleAvailable={googleAvailable}
-        isProduction={isProduction}
-        ssoEnabled={ssoEnabled}
-      />
+      <SignupFormContent />
     </Suspense>
   )
 }

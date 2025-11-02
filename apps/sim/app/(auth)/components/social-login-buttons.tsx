@@ -10,22 +10,14 @@ import { inter } from '@/app/fonts/inter'
 type AuthFlow = 'sign-in' | 'sign-up'
 
 interface SocialLoginButtonsProps {
-  githubAvailable: boolean
-  googleAvailable: boolean
-  ssoEnabled?: boolean
   callbackURL?: string
-  isProduction: boolean
   ssoLabel?: string
   children?: ReactNode
   flow?: AuthFlow
 }
 
 export function SocialLoginButtons({
-  githubAvailable,
-  googleAvailable,
-  ssoEnabled = false,
   callbackURL = '/workspace',
-  isProduction,
   ssoLabel,
   children,
   flow = 'sign-in',
@@ -47,8 +39,6 @@ export function SocialLoginButtons({
   }
 
   async function signInWithGithub() {
-    if (!githubAvailable) return
-
     setIsGithubLoading(true)
     try {
       await client.signIn.social({
@@ -80,8 +70,6 @@ export function SocialLoginButtons({
   }
 
   async function signInWithGoogle() {
-    if (!googleAvailable) return
-
     setIsGoogleLoading(true)
     try {
       await client.signIn.social({
@@ -116,7 +104,7 @@ export function SocialLoginButtons({
     <Button
       variant='outline'
       className='w-full rounded-[10px] shadow-sm hover:bg-gray-50'
-      disabled={!githubAvailable || isGithubLoading}
+      disabled={isGithubLoading}
       onClick={signInWithGithub}
     >
       <GithubIcon className='!h-[18px] !w-[18px] mr-1' />
@@ -128,7 +116,7 @@ export function SocialLoginButtons({
     <Button
       variant='outline'
       className='w-full rounded-[10px] shadow-sm hover:bg-gray-50'
-      disabled={!googleAvailable || isGoogleLoading}
+      disabled={isGoogleLoading}
       onClick={signInWithGoogle}
     >
       <GoogleIcon className='!h-[18px] !w-[18px] mr-1' />
@@ -136,25 +124,16 @@ export function SocialLoginButtons({
     </Button>
   )
 
-  const hasAnyOAuthProvider = githubAvailable || googleAvailable || ssoEnabled
-
-  if (!hasAnyOAuthProvider && !children) {
-    return null
-  }
-
   return (
     <div className={`${inter.className} grid gap-3 font-light`}>
-      {googleAvailable && googleButton}
-      {githubAvailable && githubButton}
-      {ssoEnabled && (
-        <SSOLoginButton
-          callbackURL={callbackURL}
-          variant='outline'
-          label={ssoLabel}
-          requestSignUp={isSignUpFlow}
-          enabled={ssoEnabled}
-        />
-      )}
+      {googleButton}
+      {githubButton}
+      <SSOLoginButton
+        callbackURL={callbackURL}
+        variant='outline'
+        label={ssoLabel}
+        requestSignUp={isSignUpFlow}
+      />
       {children}
     </div>
   )

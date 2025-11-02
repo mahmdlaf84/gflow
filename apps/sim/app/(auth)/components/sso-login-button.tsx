@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { getEnv, isTruthy } from '@/lib/env'
 import { cn } from '@/lib/utils'
 
 interface SSOLoginButtonProps {
@@ -16,7 +15,6 @@ interface SSOLoginButtonProps {
   primaryClassName?: string
   label?: string
   requestSignUp?: boolean
-  enabled?: boolean
 }
 
 export function SSOLoginButton({
@@ -26,16 +24,8 @@ export function SSOLoginButton({
   primaryClassName,
   label = 'Sign in with SSO',
   requestSignUp = false,
-  enabled,
 }: SSOLoginButtonProps) {
   const router = useRouter()
-
-  const resolvedEnabled =
-    typeof enabled === 'boolean' ? enabled : isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED'))
-
-  if (!resolvedEnabled) {
-    return null
-  }
 
   const handleSSOClick = () => {
     const params = new URLSearchParams()
