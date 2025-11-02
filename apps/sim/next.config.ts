@@ -64,6 +64,26 @@ const nextConfig: NextConfig = {
             }
           })()
         : []),
+      (() => {
+        try {
+          const rawAppUrl = getEnv('NEXT_PUBLIC_APP_URL') || buildSystemUrl('3000')
+          const normalizedUrl = rawAppUrl.match(/^https?:\/\//) ? rawAppUrl : `http://${rawAppUrl}`
+          const appUrl = new URL(normalizedUrl)
+          const protocol = appUrl.protocol.replace(':', '')
+          return {
+            protocol: (protocol === 'https' ? 'https' : 'http') as 'http' | 'https',
+            hostname: appUrl.hostname,
+            port: appUrl.port || undefined,
+          }
+        } catch {
+          const ipAddress = getSystemIPAddress()
+          return {
+            protocol: 'http' as const,
+            hostname: ipAddress,
+            port: '3000',
+          }
+        }
+      })(),
     ],
   },
   typescript: {
