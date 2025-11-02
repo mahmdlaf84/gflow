@@ -509,15 +509,9 @@ export default function LoginPage({
             githubAvailable={githubAvailable}
             isProduction={isProduction}
             callbackURL={callbackUrl}
-          >
-            {ssoEnabled && !hasOnlySSO && (
-              <SSOLoginButton
-                callbackURL={callbackUrl}
-                variant='outline'
-                primaryClassName={buttonClass}
-              />
-            )}
-          </SocialLoginButtons>
+            showSSOOption={ssoEnabled && !hasOnlySSO}
+            ssoPrimaryClassName={buttonClass}
+          />
         </div>
       )}
 
