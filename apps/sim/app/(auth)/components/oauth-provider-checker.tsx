@@ -1,12 +1,16 @@
 'use server'
 
-import { env } from '@/lib/env'
+import { getEnv } from '@/lib/env'
 import { isProd } from '@/lib/environment'
 
 export async function getOAuthProviderStatus() {
-  const githubAvailable = !!(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET)
+  const githubClientId = getEnv('GITHUB_CLIENT_ID')
+  const githubClientSecret = getEnv('GITHUB_CLIENT_SECRET')
+  const githubAvailable = Boolean(githubClientId && githubClientSecret)
 
-  const googleAvailable = !!(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET)
+  const googleClientId = getEnv('GOOGLE_CLIENT_ID')
+  const googleClientSecret = getEnv('GOOGLE_CLIENT_SECRET')
+  const googleAvailable = Boolean(googleClientId && googleClientSecret)
 
   return { githubAvailable, googleAvailable, isProduction: isProd }
 }

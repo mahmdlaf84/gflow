@@ -62,6 +62,10 @@ for (const [variable, config] of Object.entries(explicitIpFallbackConfigs)) {
   explicitIpFallbacks[variable] = () => buildFallbackValue(config)
 }
 
+const linkedEnvFallbacks: Record<string, string[]> = {
+  NEXT_PUBLIC_SSO_ENABLED: ['SSO_ENABLED'],
+}
+
 const FALLBACK_HEURISTIC_EXCLUSIONS = new Set<string>([
   'DATABASE_URL',
   'REDIS_URL',
@@ -130,13 +134,30 @@ for (const variable of Object.keys(explicitIpFallbacks)) {
   }
 }
 
-const getEnv = (variable: string) => {
+const resolveEnv = (variable: string, visited: Set<string>): string | undefined => {
+  if (visited.has(variable)) {
+    return undefined
+  }
+
+  visited.add(variable)
+
   const runtimeValue = runtimeEnv(variable)
   const processValue = runtimeValue ?? process.env[variable]
   const sanitizedValue = typeof processValue === 'string' ? processValue.trim() : processValue
 
   if (sanitizedValue) {
     return sanitizedValue
+  }
+
+  const linkedVariables = linkedEnvFallbacks[variable]
+  if (linkedVariables) {
+    for (const linkedVariable of linkedVariables) {
+      const linkedValue = resolveEnv(linkedVariable, visited)
+      if (linkedValue) {
+        process.env[variable] = linkedValue
+        return linkedValue
+      }
+    }
   }
 
   const fallbackValue = computeIpFallback(variable)
@@ -147,6 +168,8 @@ const getEnv = (variable: string) => {
 
   return undefined
 }
+
+const getEnv = (variable: string) => resolveEnv(variable, new Set())
 
 // biome-ignore format: keep alignment for readability
 export const env = createEnv({

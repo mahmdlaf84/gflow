@@ -101,7 +101,8 @@ function SignupFormContent({
   const [nameErrors, setNameErrors] = useState<string[]>([])
   const [showNameValidationError, setShowNameValidationError] = useState(false)
 
-  const ssoEnabled = isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED'))
+  const rawSsoEnabled = getEnv('NEXT_PUBLIC_SSO_ENABLED') ?? getEnv('SSO_ENABLED')
+  const ssoEnabled = isTruthy(rawSsoEnabled)
   const emailEnabled = !isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED'))
   const hasOAuthProviders = githubAvailable || googleAvailable
   const hasAnyFederatedLogin = hasOAuthProviders || ssoEnabled
@@ -397,6 +398,7 @@ function SignupFormContent({
             variant='primary'
             primaryClassName={buttonClass}
             label='Sign up with SSO'
+            enabled={ssoEnabled}
           />
         </div>
       )}

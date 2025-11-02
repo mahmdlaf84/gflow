@@ -1,6 +1,6 @@
 'use client'
 
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { GithubIcon, GoogleIcon } from '@/components/icons'
 import { Button } from '@/components/ui/button'
 import { client } from '@/lib/auth-client'
@@ -32,16 +32,6 @@ export function SocialLoginButtons({
 }: SocialLoginButtonsProps) {
   const [isGithubLoading, setIsGithubLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
-  const [mounted, setMounted] = useState(false)
-
-  // Set mounted state to true on client-side
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  // Only render on the client side to avoid hydration errors
-  if (!mounted) return null
-
   const isSignUpFlow = flow === 'sign-up'
 
   const buildErrorCallbackUrl = () => {
@@ -162,6 +152,7 @@ export function SocialLoginButtons({
           variant='outline'
           label={ssoLabel}
           requestSignUp={isSignUpFlow}
+          enabled={ssoEnabled}
         />
       )}
       {children}

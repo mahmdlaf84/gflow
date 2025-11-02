@@ -368,7 +368,8 @@ export default function LoginPage({
     }
   }
 
-  const ssoEnabled = isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED'))
+  const rawSsoEnabled = getEnv('NEXT_PUBLIC_SSO_ENABLED') ?? getEnv('SSO_ENABLED')
+  const ssoEnabled = isTruthy(rawSsoEnabled)
   const emailEnabled = !isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED'))
   const hasOAuthProviders = githubAvailable || googleAvailable
   const hasAnyFederatedLogin = hasOAuthProviders || ssoEnabled
@@ -395,6 +396,7 @@ export default function LoginPage({
             callbackURL={callbackUrl}
             variant='primary'
             primaryClassName={buttonClass}
+            enabled={ssoEnabled}
           />
         </div>
       )}
