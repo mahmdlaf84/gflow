@@ -13,8 +13,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui'
-import { getEnv } from '@/lib/env'
 import { createLogger } from '@/lib/logs/console/logger'
+import { getClientBaseUrl } from '@/lib/urls/utils'
 import { cn } from '@/lib/utils'
 import type { WorkflowDeploymentVersionResponse } from '@/lib/workflows/db-helpers'
 import {
@@ -303,7 +303,7 @@ export function DeployModal({
         }
 
         const data = await response.json()
-        const endpoint = `${getEnv('NEXT_PUBLIC_APP_URL')}/api/workflows/${workflowId}/execute`
+        const endpoint = `${getClientBaseUrl()}/api/workflows/${workflowId}/execute`
         const inputFormatExample = getInputFormatExample(selectedStreamingOutputs.length > 0)
 
         setDeploymentInfo({
@@ -379,7 +379,7 @@ export function DeployModal({
       const deploymentInfoResponse = await fetch(`/api/workflows/${workflowId}/deploy`)
       if (deploymentInfoResponse.ok) {
         const deploymentData = await deploymentInfoResponse.json()
-        const apiEndpoint = `${getEnv('NEXT_PUBLIC_APP_URL')}/api/workflows/${workflowId}/execute`
+        const apiEndpoint = `${getClientBaseUrl()}/api/workflows/${workflowId}/execute`
         const inputFormatExample = getInputFormatExample(selectedStreamingOutputs.length > 0)
 
         setDeploymentInfo({
@@ -578,7 +578,7 @@ export function DeployModal({
     const deploymentInfoResponse = await fetch(`/api/workflows/${workflowId}/deploy`)
     if (deploymentInfoResponse.ok) {
       const deploymentData = await deploymentInfoResponse.json()
-      const apiEndpoint = `${getEnv('NEXT_PUBLIC_APP_URL')}/api/workflows/${workflowId}/execute`
+      const apiEndpoint = `${getClientBaseUrl()}/api/workflows/${workflowId}/execute`
       const inputFormatExample = getInputFormatExample(selectedStreamingOutputs.length > 0)
 
       setDeploymentInfo({

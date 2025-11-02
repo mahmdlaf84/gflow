@@ -11,8 +11,8 @@ import {
 } from 'react'
 import { useParams } from 'next/navigation'
 import { io, type Socket } from 'socket.io-client'
-import { getEnv } from '@/lib/env'
 import { createLogger } from '@/lib/logs/console/logger'
+import { getClientSocketUrl } from '@/lib/urls/utils'
 
 const logger = createLogger('SocketContext')
 
@@ -164,7 +164,7 @@ export function SocketProvider({ children, user }: SocketProviderProps) {
         // Generate initial token for socket authentication
         const token = await generateSocketToken()
 
-        const socketUrl = getEnv('NEXT_PUBLIC_SOCKET_URL') || 'http://localhost:3002'
+        const socketUrl = getClientSocketUrl()
 
         logger.info('Attempting to connect to Socket.IO server', {
           url: socketUrl,
