@@ -9,12 +9,59 @@ import { buildSystemUrl } from '@/lib/network'
  * - Server-side: Falls back to process.env when runtimeEnv returns undefined
  * - Provides seamless Docker runtime variable support for NEXT_PUBLIC_ vars
  */
-if (!process.env.NEXT_PUBLIC_APP_URL) {
-  const preferredPort = process.env.PORT ? String(process.env.PORT) : '3000'
-  process.env.NEXT_PUBLIC_APP_URL = buildSystemUrl(preferredPort)
+const preferredHttpPort = process.env.PORT ? String(process.env.PORT) : '3000'
+
+const ipRelatedFallbacks: Record<string, () => string> = {
+  NEXT_PUBLIC_APP_URL: () => buildSystemUrl(preferredHttpPort),
+  BETTER_AUTH_URL: () => buildSystemUrl(preferredHttpPort),
+  NEXTAUTH_URL: () => buildSystemUrl(preferredHttpPort),
+  NEXT_PUBLIC_SOCKET_URL: () => buildSystemUrl('3002'),
+  SOCKET_SERVER_URL: () => buildSystemUrl('3002'),
+  OLLAMA_URL: () => buildSystemUrl('11434'),
 }
 
-const getEnv = (variable: string) => runtimeEnv(variable) ?? process.env[variable]
+for (const [variable, fallbackFactory] of Object.entries(ipRelatedFallbacks)) {
+  const existingValue = process.env[variable]
+  if (typeof existingValue === 'string' && existingValue.trim()) {
+    continue
+  }
+
+  try {
+    const derived = fallbackFactory()
+    if (derived) {
+      process.env[variable] = derived
+    }
+  } catch {
+    // Ignore fallback errors - environment may be resolving in a constrained runtime
+  }
+}
+
+const getEnv = (variable: string) => {
+  const runtimeValue = runtimeEnv(variable)
+  const processValue = runtimeValue ?? process.env[variable]
+  const sanitizedValue = typeof processValue === 'string' ? processValue.trim() : processValue
+
+  if (sanitizedValue) {
+    return sanitizedValue
+  }
+
+  const fallbackFactory = ipRelatedFallbacks[variable]
+  if (!fallbackFactory) {
+    return undefined
+  }
+
+  try {
+    const fallbackValue = fallbackFactory()
+    if (fallbackValue) {
+      process.env[variable] = fallbackValue
+      return fallbackValue
+    }
+  } catch {
+    // Swallow errors and fall back to undefined to avoid breaking runtime resolution
+  }
+
+  return undefined
+}
 
 // biome-ignore format: keep alignment for readability
 export const env = createEnv({
