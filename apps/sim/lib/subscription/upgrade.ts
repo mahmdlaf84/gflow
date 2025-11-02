@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
-import { client, useSession, useSubscription } from '@/lib/auth-client'
-import { createLogger } from '@/lib/logs/console/logger'
+import { client, useSession, useSubscription } from '@/auth-client'
+import { createLogger } from '@/logs/console/logger'
 import { useOrganizationStore } from '@/stores/organization'
 
 const logger = createLogger('SubscriptionUpgrade')

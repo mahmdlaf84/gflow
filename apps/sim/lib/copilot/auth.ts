@@ -1,9 +1,9 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { authenticateApiKeyFromHeader, updateApiKeyLastUsed } from '@/lib/api-key/service'
-import { getSession } from '@/lib/auth'
-import { generateRequestId } from '@/lib/utils'
+import { authenticateApiKeyFromHeader, updateApiKeyLastUsed } from '@/api-key/service'
+import { getSession } from '@/auth'
+import { generateRequestId } from '@/utils'
 
-export type { NotificationStatus } from '@/lib/copilot/types'
+export type { NotificationStatus } from '@/copilot/types'
 
 export interface CopilotAuthResult {
   userId: string | null

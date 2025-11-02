@@ -2,9 +2,9 @@ import { db } from '@sim/db'
 import { webhook as webhookTable } from '@sim/db/schema'
 import { eq } from 'drizzle-orm'
 import type { NextRequest } from 'next/server'
-import { createLogger } from '@/lib/logs/console/logger'
-import { getBaseUrl } from '@/lib/urls/utils'
 import { refreshAccessTokenIfNeeded } from '@/app/api/auth/oauth/utils'
+import { createLogger } from '@/logs/console/logger'
+import { getBaseUrl } from '@/urls/utils'
 
 const teamsLogger = createLogger('TeamsSubscription')
 const telegramLogger = createLogger('TelegramWebhook')

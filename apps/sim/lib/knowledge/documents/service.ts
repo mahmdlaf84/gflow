@@ -3,19 +3,15 @@ import { db } from '@sim/db'
 import { document, embedding, knowledgeBase, knowledgeBaseTagDefinitions } from '@sim/db/schema'
 import { tasks } from '@trigger.dev/sdk'
 import { and, asc, desc, eq, inArray, isNull, sql } from 'drizzle-orm'
-import {
-  checkStorageQuota,
-  decrementStorageUsage,
-  incrementStorageUsage,
-} from '@/lib/billing/storage'
-import { generateEmbeddings } from '@/lib/embeddings/utils'
-import { env } from '@/lib/env'
-import { getSlotsForFieldType, type TAG_SLOT_CONFIG } from '@/lib/knowledge/consts'
-import { processDocument } from '@/lib/knowledge/documents/document-processor'
-import { getNextAvailableSlot } from '@/lib/knowledge/tags/service'
-import { createLogger } from '@/lib/logs/console/logger'
-import { getRedisClient } from '@/lib/redis'
 import type { DocumentProcessingPayload } from '@/background/knowledge-processing'
+import { checkStorageQuota, decrementStorageUsage, incrementStorageUsage } from '@/billing/storage'
+import { generateEmbeddings } from '@/embeddings/utils'
+import { env } from '@/env'
+import { getSlotsForFieldType, type TAG_SLOT_CONFIG } from '@/knowledge/consts'
+import { processDocument } from '@/knowledge/documents/document-processor'
+import { getNextAvailableSlot } from '@/knowledge/tags/service'
+import { createLogger } from '@/logs/console/logger'
+import { getRedisClient } from '@/redis'
 import { DocumentProcessingQueue } from './queue'
 import type { DocumentSortField, SortOrder } from './types'
 

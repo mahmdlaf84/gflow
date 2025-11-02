@@ -2,17 +2,17 @@
  * Streaming-specific tokenization helpers
  */
 
-import { createLogger } from '@/lib/logs/console/logger'
-import { calculateStreamingCost } from '@/lib/tokenization/calculators'
-import { TOKENIZATION_CONFIG } from '@/lib/tokenization/constants'
+import type { BlockLog } from '@/executor/types'
+import { createLogger } from '@/logs/console/logger'
+import { calculateStreamingCost } from '@/tokenization/calculators'
+import { TOKENIZATION_CONFIG } from '@/tokenization/constants'
 import {
   extractTextContent,
   hasRealCostData,
   hasRealTokenData,
   isTokenizableBlockType,
   logTokenizationDetails,
-} from '@/lib/tokenization/utils'
-import type { BlockLog } from '@/executor/types'
+} from '@/tokenization/utils'
 
 const logger = createLogger('StreamingTokenization')
 

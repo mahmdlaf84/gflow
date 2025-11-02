@@ -3,24 +3,39 @@ import { Server } from 'socket.io'
 import { env } from '@/lib/env'
 import { isProd } from '@/lib/environment'
 import { createLogger } from '@/lib/logs/console/logger'
-import { getBaseUrl } from '@/lib/urls/utils'
+import { buildSystemUrl, getBaseUrl, isLocalHostname } from '@/lib/urls/utils'
 
 const logger = createLogger('SocketIOConfig')
 
 /**
  * Get allowed origins for Socket.IO CORS configuration
  */
-function getAllowedOrigins(): string[] {
-  const allowedOrigins = [
+function getAllowedOrigins(): { allowedOrigins: string[]; allowAnyOrigin: boolean } {
+  const configuredOrigins = [
     getBaseUrl(),
-    'http://localhost:3000',
-    'http://localhost:3001',
+    buildSystemUrl('3000'),
+    buildSystemUrl('3001'),
     ...(env.ALLOWED_ORIGINS?.split(',') || []),
   ].filter((url): url is string => Boolean(url))
 
-  logger.info('Socket.IO CORS configuration:', { allowedOrigins })
+  let allowAnyOrigin = false
 
-  return allowedOrigins
+  try {
+    const parsed = new URL(getBaseUrl())
+    const hasExplicitOverrides = Boolean(env.ALLOWED_ORIGINS?.trim())
+    if (isLocalHostname(parsed.hostname) && !hasExplicitOverrides) {
+      allowAnyOrigin = true
+    }
+  } catch (error) {
+    logger.warn('Failed to parse base URL when configuring socket CORS', { error })
+  }
+
+  logger.info('Socket.IO CORS configuration:', {
+    allowedOrigins: configuredOrigins,
+    allowAnyOrigin,
+  })
+
+  return { allowedOrigins: configuredOrigins, allowAnyOrigin }
 }
 
 /**
@@ -29,11 +44,11 @@ function getAllowedOrigins(): string[] {
  * @returns Configured Socket.IO server instance
  */
 export function createSocketIOServer(httpServer: HttpServer): Server {
-  const allowedOrigins = getAllowedOrigins()
+  const { allowedOrigins, allowAnyOrigin } = getAllowedOrigins()
 
   const io = new Server(httpServer, {
     cors: {
-      origin: allowedOrigins,
+      origin: allowAnyOrigin ? true : allowedOrigins,
       methods: ['GET', 'POST', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'socket.io'],
       credentials: true, // Enable credentials to accept cookies

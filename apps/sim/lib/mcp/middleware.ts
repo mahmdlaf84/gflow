@@ -1,9 +1,9 @@
 import type { NextRequest, NextResponse } from 'next/server'
-import { checkHybridAuth } from '@/lib/auth/hybrid'
-import { createLogger } from '@/lib/logs/console/logger'
-import { createMcpErrorResponse } from '@/lib/mcp/utils'
-import { getUserEntityPermissions } from '@/lib/permissions/utils'
-import { generateRequestId } from '@/lib/utils'
+import { checkHybridAuth } from '@/auth/hybrid'
+import { createLogger } from '@/logs/console/logger'
+import { createMcpErrorResponse } from '@/mcp/utils'
+import { getUserEntityPermissions } from '@/permissions/utils'
+import { generateRequestId } from '@/utils'
 
 const logger = createLogger('McpAuthMiddleware')
 

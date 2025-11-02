@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from 'vitest'
-import { ExecutionLogger } from '@/lib/logs/execution/logger'
+import { ExecutionLogger } from '@/logs/execution/logger'
 
 describe('ExecutionLogger', () => {
   let logger: ExecutionLogger

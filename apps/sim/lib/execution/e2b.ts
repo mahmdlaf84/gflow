@@ -1,5 +1,5 @@
 import { Sandbox } from '@e2b/code-interpreter'
-import { createLogger } from '@/lib/logs/console/logger'
+import { createLogger } from '@/logs/console/logger'
 import { CodeLanguage } from './languages'
 
 export interface E2BExecutionRequest {

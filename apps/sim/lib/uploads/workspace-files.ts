@@ -6,14 +6,10 @@
 import { db } from '@sim/db'
 import { workspaceFile } from '@sim/db/schema'
 import { and, eq } from 'drizzle-orm'
-import {
-  checkStorageQuota,
-  decrementStorageUsage,
-  incrementStorageUsage,
-} from '@/lib/billing/storage'
-import { createLogger } from '@/lib/logs/console/logger'
-import { deleteFile, downloadFile } from '@/lib/uploads/storage-client'
+import { checkStorageQuota, decrementStorageUsage, incrementStorageUsage } from '@/billing/storage'
 import type { UserFile } from '@/executor/types'
+import { createLogger } from '@/logs/console/logger'
+import { deleteFile, downloadFile } from '@/uploads/storage-client'
 
 const logger = createLogger('WorkspaceFileStorage')
 
@@ -77,11 +73,11 @@ export async function uploadWorkspaceFile(
 
     // Upload to storage with skipTimestampPrefix to use exact key
     const { USE_S3_STORAGE, USE_BLOB_STORAGE, S3_CONFIG, BLOB_CONFIG } = await import(
-      '@/lib/uploads/setup'
+      '@/uploads/setup'
     )
 
     if (USE_S3_STORAGE) {
-      const { uploadToS3 } = await import('@/lib/uploads/s3/s3-client')
+      const { uploadToS3 } = await import('@/uploads/s3/s3-client')
       // Use custom config overload with skipTimestampPrefix
       uploadResult = await uploadToS3(
         fileBuffer,
@@ -95,7 +91,7 @@ export async function uploadWorkspaceFile(
         true // skipTimestampPrefix = true
       )
     } else if (USE_BLOB_STORAGE) {
-      const { uploadToBlob } = await import('@/lib/uploads/blob/blob-client')
+      const { uploadToBlob } = await import('@/uploads/blob/blob-client')
       // Blob doesn't have skipTimestampPrefix, but we pass the full key
       uploadResult = await uploadToBlob(
         fileBuffer,
@@ -139,7 +135,7 @@ export async function uploadWorkspaceFile(
     }
 
     // Generate presigned URL (valid for 24 hours for initial access)
-    const { getPresignedUrl } = await import('@/lib/uploads')
+    const { getPresignedUrl } = await import('@/uploads')
     let presignedUrl: string | undefined
 
     try {
@@ -200,7 +196,7 @@ export async function listWorkspaceFiles(workspaceId: string): Promise<Workspace
       .orderBy(workspaceFile.uploadedAt)
 
     // Add full serve path for each file (don't generate presigned URLs here)
-    const { getServePathPrefix } = await import('@/lib/uploads')
+    const { getServePathPrefix } = await import('@/uploads')
     const pathPrefix = getServePathPrefix()
 
     return files.map((file) => ({
@@ -231,7 +227,7 @@ export async function getWorkspaceFile(
     if (files.length === 0) return null
 
     // Add full serve path
-    const { getServePathPrefix } = await import('@/lib/uploads')
+    const { getServePathPrefix } = await import('@/uploads')
     const pathPrefix = getServePathPrefix()
 
     return {

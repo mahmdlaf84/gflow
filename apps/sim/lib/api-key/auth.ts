@@ -5,9 +5,9 @@ import {
   generateEncryptedApiKey,
   isEncryptedApiKeyFormat,
   isLegacyApiKeyFormat,
-} from '@/lib/api-key/service'
-import { env } from '@/lib/env'
-import { createLogger } from '@/lib/logs/console/logger'
+} from '@/api-key/service'
+import { env } from '@/env'
+import { createLogger } from '@/logs/console/logger'
 
 const logger = createLogger('ApiKeyAuth')
 

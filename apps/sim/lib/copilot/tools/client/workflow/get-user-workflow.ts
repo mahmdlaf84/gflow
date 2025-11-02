@@ -3,13 +3,13 @@ import {
   BaseClientTool,
   type BaseClientToolMetadata,
   ClientToolCallState,
-} from '@/lib/copilot/tools/client/base-tool'
-import { createLogger } from '@/lib/logs/console/logger'
-import { sanitizeForCopilot } from '@/lib/workflows/json-sanitizer'
+} from '@/copilot/tools/client/base-tool'
+import { createLogger } from '@/logs/console/logger'
 import { useWorkflowDiffStore } from '@/stores/workflow-diff/store'
 import { useWorkflowRegistry } from '@/stores/workflows/registry/store'
 import { mergeSubblockState } from '@/stores/workflows/utils'
 import { useWorkflowStore } from '@/stores/workflows/workflow/store'
+import { sanitizeForCopilot } from '@/workflows/json-sanitizer'
 
 interface GetUserWorkflowArgs {
   workflowId?: string

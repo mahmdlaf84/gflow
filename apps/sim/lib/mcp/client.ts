@@ -8,7 +8,7 @@
  * - Session management with Mcp-Session-Id header
  */
 
-import { createLogger } from '@/lib/logs/console/logger'
+import { createLogger } from '@/logs/console/logger'
 import {
   type JsonRpcRequest,
   type JsonRpcResponse,
@@ -27,7 +27,7 @@ import {
   type McpToolCall,
   type McpToolResult,
   type McpVersionInfo,
-} from '@/lib/mcp/types'
+} from '@/mcp/types'
 
 const logger = createLogger('McpClient')
 

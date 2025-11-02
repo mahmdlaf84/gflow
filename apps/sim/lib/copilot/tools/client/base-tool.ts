@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
 // Lazy require in setState to avoid circular init issues
-import { createLogger } from '@/lib/logs/console/logger'
+import { createLogger } from '@/logs/console/logger'
 
 const baseToolLogger = createLogger('BaseClientTool')
 
@@ -121,7 +121,7 @@ export class BaseClientTool {
 
     // Notify store via manager to avoid import cycles
     try {
-      const { syncToolState } = require('@/lib/copilot/tools/client/manager')
+      const { syncToolState } = require('@/copilot/tools/client/manager')
       syncToolState(this.toolCallId, next, options)
     } catch {}
 

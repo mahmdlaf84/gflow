@@ -1,10 +1,10 @@
 import { EmailClient, type EmailMessage } from '@azure/communication-email'
 import { Resend } from 'resend'
-import { generateUnsubscribeToken, isUnsubscribed } from '@/lib/email/unsubscribe'
-import { getFromEmailAddress } from '@/lib/email/utils'
-import { env } from '@/lib/env'
-import { createLogger } from '@/lib/logs/console/logger'
-import { getBaseUrl } from '@/lib/urls/utils'
+import { generateUnsubscribeToken, isUnsubscribed } from '@/email/unsubscribe'
+import { getFromEmailAddress } from '@/email/utils'
+import { env } from '@/env'
+import { createLogger } from '@/logs/console/logger'
+import { getBaseUrl } from '@/urls/utils'
 
 const logger = createLogger('Mailer')
 

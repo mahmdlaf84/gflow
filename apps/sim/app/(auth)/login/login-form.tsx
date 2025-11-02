@@ -16,12 +16,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { client } from '@/lib/auth-client'
 import { quickValidateEmail } from '@/lib/email/validation'
-import { getEnv, isFalsy, isTruthy } from '@/lib/env'
+import { getEnv, isFalsy } from '@/lib/env'
 import { createLogger } from '@/lib/logs/console/logger'
 import { getBaseUrl } from '@/lib/urls/utils'
 import { cn } from '@/lib/utils'
 import { SocialLoginButtons } from '@/app/(auth)/components/social-login-buttons'
-import { SSOLoginButton } from '@/app/(auth)/components/sso-login-button'
 import { inter } from '@/app/fonts/inter'
 import { soehne } from '@/app/fonts/soehne/soehne'
 
@@ -88,15 +87,7 @@ const validatePassword = (passwordValue: string): string[] => {
   return errors
 }
 
-export default function LoginPage({
-  githubAvailable,
-  googleAvailable,
-  isProduction,
-}: {
-  githubAvailable: boolean
-  googleAvailable: boolean
-  isProduction: boolean
-}) {
+export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
@@ -368,13 +359,7 @@ export default function LoginPage({
     }
   }
 
-  const ssoEnabled = isTruthy(getEnv('NEXT_PUBLIC_SSO_ENABLED'))
   const emailEnabled = !isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED'))
-  const hasSocial = githubAvailable || googleAvailable
-  const hasOnlySSO = ssoEnabled && !emailEnabled && !hasSocial
-  const showTopSSO = hasOnlySSO
-  const showBottomSection = hasSocial || (ssoEnabled && !hasOnlySSO)
-  const showDivider = (emailEnabled || showTopSSO) && showBottomSection
 
   return (
     <>
@@ -386,17 +371,6 @@ export default function LoginPage({
           Enter your details
         </p>
       </div>
-
-      {/* SSO Login Button (primary top-only when it is the only method) */}
-      {showTopSSO && (
-        <div className={`${inter.className} mt-8`}>
-          <SSOLoginButton
-            callbackURL={callbackUrl}
-            variant='primary'
-            primaryClassName={buttonClass}
-          />
-        </div>
-      )}
 
       {/* Email/Password Form - show unless explicitly disabled */}
       {!isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED')) && (
@@ -490,8 +464,7 @@ export default function LoginPage({
         </form>
       )}
 
-      {/* Divider - show when we have multiple auth methods */}
-      {showDivider && (
+      {emailEnabled && (
         <div className={`${inter.className} relative my-6 font-light`}>
           <div className='absolute inset-0 flex items-center'>
             <div className='auth-divider w-full border-t' />
@@ -502,24 +475,9 @@ export default function LoginPage({
         </div>
       )}
 
-      {showBottomSection && (
-        <div className={cn(inter.className, !emailEnabled ? 'mt-8' : undefined)}>
-          <SocialLoginButtons
-            googleAvailable={googleAvailable}
-            githubAvailable={githubAvailable}
-            isProduction={isProduction}
-            callbackURL={callbackUrl}
-          >
-            {ssoEnabled && !hasOnlySSO && (
-              <SSOLoginButton
-                callbackURL={callbackUrl}
-                variant='outline'
-                primaryClassName={buttonClass}
-              />
-            )}
-          </SocialLoginButtons>
-        </div>
-      )}
+      <div className={cn(inter.className, !emailEnabled ? 'mt-8' : undefined)}>
+        <SocialLoginButtons callbackURL={callbackUrl} ssoLabel='Sign in with SSO' flow='sign-in' />
+      </div>
 
       {/* Only show signup link if email/password signup is enabled */}
       {!isFalsy(getEnv('NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED')) && (

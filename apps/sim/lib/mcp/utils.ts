@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import type { McpApiResponse } from '@/lib/mcp/types'
+import type { McpApiResponse } from '@/mcp/types'
 
 /**
  * MCP-specific constants

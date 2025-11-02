@@ -1,1 +1,1 @@
-export * from '@/lib/oauth/oauth'
+export * from '@/oauth/oauth'

@@ -1,10 +1,49 @@
 import { NextResponse } from 'next/server'
 import { createLogger } from '@/lib/logs/console/logger'
 import { getUserEntityPermissions } from '@/lib/permissions/utils'
+import { persistApiLog } from '@/logs/api'
 
 const logger = createLogger('WorkflowUtils')
 
-export function createErrorResponse(error: string, status: number, code?: string) {
+type ApiResponseLogOptions = {
+  request?: Request
+  status?: number
+  details?: unknown
+  module?: string
+}
+
+const logApiResponse = (
+  level: 'INFO' | 'ERROR',
+  message: string,
+  fallbackStatus: number,
+  options?: ApiResponseLogOptions
+) => {
+  if (typeof window !== 'undefined') {
+    return
+  }
+
+  const request = options?.request
+  const status = options?.status ?? fallbackStatus
+
+  void persistApiLog({
+    level,
+    module: options?.module ?? 'WorkflowUtils',
+    message,
+    status,
+    method: request?.method,
+    url: request?.url,
+    args: options?.details !== undefined ? [options.details] : undefined,
+  })
+}
+
+export function createErrorResponse(
+  error: string,
+  status: number,
+  code?: string,
+  options?: ApiResponseLogOptions
+) {
+  logApiResponse('ERROR', error, status, options)
+
   return NextResponse.json(
     {
       error,
@@ -14,8 +53,12 @@ export function createErrorResponse(error: string, status: number, code?: string
   )
 }
 
-export function createSuccessResponse(data: any) {
-  return NextResponse.json(data)
+export function createSuccessResponse(data: any, options?: ApiResponseLogOptions) {
+  logApiResponse('INFO', 'Request completed successfully', 200, options)
+
+  const responseStatus = options?.status ?? 200
+
+  return NextResponse.json(data, { status: responseStatus })
 }
 
 /**

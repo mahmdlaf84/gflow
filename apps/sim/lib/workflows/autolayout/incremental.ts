@@ -1,4 +1,4 @@
-import { createLogger } from '@/lib/logs/console/logger'
+import { createLogger } from '@/logs/console/logger'
 import type { BlockState } from '@/stores/workflows/workflow/types'
 import type { AdjustmentOptions, Edge } from './types'
 import { boxesOverlap, createBoundingBox, getBlockMetrics } from './utils'

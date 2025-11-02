@@ -1,7 +1,7 @@
 import { existsSync } from 'fs'
 import path from 'path'
-import type { FileParseResult, FileParser, SupportedFileType } from '@/lib/file-parsers/types'
-import { createLogger } from '@/lib/logs/console/logger'
+import type { FileParseResult, FileParser, SupportedFileType } from '@/file-parsers/types'
+import { createLogger } from '@/logs/console/logger'
 
 const logger = createLogger('FileParser')
 
@@ -17,7 +17,7 @@ function getParserInstances(): Record<string, FileParser> {
     try {
       try {
         logger.info('Loading PDF parser...')
-        const { PdfParser } = require('@/lib/file-parsers/pdf-parser')
+        const { PdfParser } = require('@/file-parsers/pdf-parser')
         parserInstances.pdf = new PdfParser()
         logger.info('PDF parser loaded successfully')
       } catch (error) {
@@ -25,7 +25,7 @@ function getParserInstances(): Record<string, FileParser> {
       }
 
       try {
-        const { CsvParser } = require('@/lib/file-parsers/csv-parser')
+        const { CsvParser } = require('@/file-parsers/csv-parser')
         parserInstances.csv = new CsvParser()
         logger.info('Loaded streaming CSV parser with csv-parse library')
       } catch (error) {
@@ -33,35 +33,35 @@ function getParserInstances(): Record<string, FileParser> {
       }
 
       try {
-        const { DocxParser } = require('@/lib/file-parsers/docx-parser')
+        const { DocxParser } = require('@/file-parsers/docx-parser')
         parserInstances.docx = new DocxParser()
       } catch (error) {
         logger.error('Failed to load DOCX parser:', error)
       }
 
       try {
-        const { DocParser } = require('@/lib/file-parsers/doc-parser')
+        const { DocParser } = require('@/file-parsers/doc-parser')
         parserInstances.doc = new DocParser()
       } catch (error) {
         logger.error('Failed to load DOC parser:', error)
       }
 
       try {
-        const { TxtParser } = require('@/lib/file-parsers/txt-parser')
+        const { TxtParser } = require('@/file-parsers/txt-parser')
         parserInstances.txt = new TxtParser()
       } catch (error) {
         logger.error('Failed to load TXT parser:', error)
       }
 
       try {
-        const { MdParser } = require('@/lib/file-parsers/md-parser')
+        const { MdParser } = require('@/file-parsers/md-parser')
         parserInstances.md = new MdParser()
       } catch (error) {
         logger.error('Failed to load MD parser:', error)
       }
 
       try {
-        const { XlsxParser } = require('@/lib/file-parsers/xlsx-parser')
+        const { XlsxParser } = require('@/file-parsers/xlsx-parser')
         parserInstances.xlsx = new XlsxParser()
         parserInstances.xls = new XlsxParser()
         logger.info('Loaded XLSX parser')
@@ -70,7 +70,7 @@ function getParserInstances(): Record<string, FileParser> {
       }
 
       try {
-        const { PptxParser } = require('@/lib/file-parsers/pptx-parser')
+        const { PptxParser } = require('@/file-parsers/pptx-parser')
         parserInstances.pptx = new PptxParser()
         parserInstances.ppt = new PptxParser()
       } catch (error) {
@@ -78,7 +78,7 @@ function getParserInstances(): Record<string, FileParser> {
       }
 
       try {
-        const { HtmlParser } = require('@/lib/file-parsers/html-parser')
+        const { HtmlParser } = require('@/file-parsers/html-parser')
         parserInstances.html = new HtmlParser()
         parserInstances.htm = new HtmlParser()
       } catch (error) {
@@ -86,7 +86,7 @@ function getParserInstances(): Record<string, FileParser> {
       }
 
       try {
-        const { parseJSON, parseJSONBuffer } = require('@/lib/file-parsers/json-parser')
+        const { parseJSON, parseJSONBuffer } = require('@/file-parsers/json-parser')
         parserInstances.json = {
           parseFile: parseJSON,
           parseBuffer: parseJSONBuffer,
@@ -97,7 +97,7 @@ function getParserInstances(): Record<string, FileParser> {
       }
 
       try {
-        const { parseYAML, parseYAMLBuffer } = require('@/lib/file-parsers/yaml-parser')
+        const { parseYAML, parseYAMLBuffer } = require('@/file-parsers/yaml-parser')
         parserInstances.yaml = {
           parseFile: parseYAML,
           parseBuffer: parseYAMLBuffer,

@@ -1,5 +1,5 @@
-import { TriggerUtils } from '@/lib/workflows/triggers'
 import type { BlockState } from '@/stores/workflows/workflow/types'
+import { TriggerUtils } from '@/workflows/triggers'
 import type { BlockMetrics, BoundingBox, GraphNode } from './types'
 
 export const DEFAULT_BLOCK_WIDTH = 350

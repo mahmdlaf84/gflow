@@ -1,4 +1,4 @@
-import type { CopilotWorkflowState } from '@/lib/workflows/json-sanitizer'
+import type { CopilotWorkflowState } from '@/workflows/json-sanitizer'
 
 export interface EditOperation {
   operation_type: 'add' | 'edit' | 'delete' | 'insert_into_subflow' | 'extract_from_subflow'

@@ -1,5 +1,5 @@
-import { createLogger } from '@/lib/logs/console/logger'
 import { getBlock } from '@/blocks/registry'
+import { createLogger } from '@/logs/console/logger'
 import type { WorkflowState } from '@/stores/workflows/workflow/types'
 import { getTool } from '@/tools/utils'
 

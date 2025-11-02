@@ -1,7 +1,7 @@
 import { jwtVerify, SignJWT } from 'jose'
 import { type NextRequest, NextResponse } from 'next/server'
-import { env } from '@/lib/env'
-import { createLogger } from '@/lib/logs/console/logger'
+import { env } from '@/env'
+import { createLogger } from '@/logs/console/logger'
 
 const logger = createLogger('CronAuth')
 

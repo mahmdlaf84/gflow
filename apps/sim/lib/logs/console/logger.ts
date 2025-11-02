@@ -5,7 +5,8 @@
  * It is separate from the user-facing logging system in logging.ts.
  */
 import chalk from 'chalk'
-import { env } from '@/lib/env'
+import { env } from '@/env'
+import { persistApiLog } from '@/logs/api'
 
 /**
  * LogLevel enum defines the severity levels for logging
@@ -207,6 +208,20 @@ export class Logger {
         console.log(prefix, message, ...formattedArgs)
       }
     }
+
+    if (typeof window === 'undefined') {
+      const moduleName = this.module.toLowerCase()
+      const shouldPersistLog = level === LogLevel.ERROR || moduleName.includes('api')
+
+      if (shouldPersistLog) {
+        void persistApiLog({
+          level,
+          module: this.module,
+          message,
+          args,
+        })
+      }
+    }
   }
 
   /**
@@ -285,7 +300,7 @@ export class Logger {
  *
  * Usage example:
  * ```
- * import { createLogger } from '@/lib/logger'
+ * import { createLogger } from '@/logger'
  *
  * const logger = createLogger('MyComponent')
  *
