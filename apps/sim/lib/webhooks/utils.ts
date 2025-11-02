@@ -525,6 +525,72 @@ async function formatTeamsGraphNotification(
   }
 }
 
+export async function validateTwilioSignature(
+  authToken: string,
+  signature: string,
+  url: string,
+  params: Record<string, any>
+): Promise<boolean> {
+  try {
+    if (!authToken || !signature || !url) {
+      logger.warn('Twilio signature validation missing required fields', {
+        hasAuthToken: !!authToken,
+        hasSignature: !!signature,
+        hasUrl: !!url,
+      })
+      return false
+    }
+
+    const sortedKeys = Object.keys(params).sort()
+    let data = url
+    for (const key of sortedKeys) {
+      data += key + params[key]
+    }
+
+    logger.debug('Twilio signature validation string built', {
+      url,
+      sortedKeys,
+      dataLength: data.length,
+    })
+
+    const encoder = new TextEncoder()
+    const key = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(authToken),
+      { name: 'HMAC', hash: 'SHA-1' },
+      false,
+      ['sign']
+    )
+
+    const signatureBytes = await crypto.subtle.sign('HMAC', key, encoder.encode(data))
+
+    const signatureArray = Array.from(new Uint8Array(signatureBytes))
+    const signatureBase64 = btoa(String.fromCharCode(...signatureArray))
+
+    logger.debug('Twilio signature comparison', {
+      computedSignature: `${signatureBase64.substring(0, 10)}...`,
+      providedSignature: `${signature.substring(0, 10)}...`,
+      computedLength: signatureBase64.length,
+      providedLength: signature.length,
+      match: signatureBase64 === signature,
+    })
+
+    if (signatureBase64.length !== signature.length) {
+      return false
+    }
+
+    let result = 0
+    for (let i = 0; i < signatureBase64.length; i++) {
+      result |= signatureBase64.charCodeAt(i) ^ signature.charCodeAt(i)
+    }
+
+    return result === 0
+  } catch (error) {
+    logger.error('Error validating Twilio signature:', error)
+    return false
+  }
+}
+
 /**
  * Format webhook input based on provider
  */
@@ -719,6 +785,58 @@ export async function formatWebhookInput(
       webhook: {
         data: {
           provider: 'telegram',
+          path: foundWebhook.path,
+          providerConfig: foundWebhook.providerConfig,
+          payload: body,
+          headers: Object.fromEntries(request.headers.entries()),
+          method: request.method,
+        },
+      },
+      workflowId: foundWorkflow.id,
+    }
+  }
+
+  if (foundWebhook.provider === 'twilio_voice') {
+    return {
+      // Root-level properties matching trigger outputs for easy access
+      callSid: body.CallSid,
+      accountSid: body.AccountSid,
+      from: body.From,
+      to: body.To,
+      callStatus: body.CallStatus,
+      direction: body.Direction,
+      apiVersion: body.ApiVersion,
+      callerName: body.CallerName,
+      forwardedFrom: body.ForwardedFrom,
+      digits: body.Digits,
+      speechResult: body.SpeechResult,
+      recordingUrl: body.RecordingUrl,
+      recordingSid: body.RecordingSid,
+
+      // Additional fields from Twilio payload
+      called: body.Called,
+      caller: body.Caller,
+      toCity: body.ToCity,
+      toState: body.ToState,
+      toZip: body.ToZip,
+      toCountry: body.ToCountry,
+      fromCity: body.FromCity,
+      fromState: body.FromState,
+      fromZip: body.FromZip,
+      fromCountry: body.FromCountry,
+      calledCity: body.CalledCity,
+      calledState: body.CalledState,
+      calledZip: body.CalledZip,
+      calledCountry: body.CalledCountry,
+      callerCity: body.CallerCity,
+      callerState: body.CallerState,
+      callerZip: body.CallerZip,
+      callerCountry: body.CallerCountry,
+      callToken: body.CallToken,
+
+      webhook: {
+        data: {
+          provider: 'twilio_voice',
           path: foundWebhook.path,
           providerConfig: foundWebhook.providerConfig,
           payload: body,
