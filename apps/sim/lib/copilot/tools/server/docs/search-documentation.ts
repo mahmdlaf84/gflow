@@ -1,8 +1,8 @@
 import { db } from '@sim/db'
 import { docsEmbeddings } from '@sim/db/schema'
 import { sql } from 'drizzle-orm'
-import type { BaseServerTool } from '@/lib/copilot/tools/server/base-tool'
-import { createLogger } from '@/lib/logs/console/logger'
+import type { BaseServerTool } from '@/copilot/tools/server/base-tool'
+import { createLogger } from '@/logs/console/logger'
 
 interface DocsSearchParams {
   query: string
@@ -19,11 +19,11 @@ export const searchDocumentationServerTool: BaseServerTool<DocsSearchParams, any
 
     logger.info('Executing docs search', { query, topK })
 
-    const { getCopilotConfig } = await import('@/lib/copilot/config')
+    const { getCopilotConfig } = await import('@/copilot/config')
     const config = getCopilotConfig()
     const similarityThreshold = threshold ?? config.rag.similarityThreshold
 
-    const { generateSearchEmbedding } = await import('@/lib/embeddings/utils')
+    const { generateSearchEmbedding } = await import('@/embeddings/utils')
     const queryEmbedding = await generateSearchEmbedding(query)
     if (!queryEmbedding || queryEmbedding.length === 0) {
       return { results: [], query, totalResults: 0 }

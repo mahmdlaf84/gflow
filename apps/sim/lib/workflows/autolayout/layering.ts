@@ -1,4 +1,4 @@
-import { createLogger } from '@/lib/logs/console/logger'
+import { createLogger } from '@/logs/console/logger'
 import type { BlockState } from '@/stores/workflows/workflow/types'
 import type { Edge, GraphNode } from './types'
 import { getBlockMetrics } from './utils'

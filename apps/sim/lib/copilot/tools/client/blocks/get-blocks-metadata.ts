@@ -3,13 +3,13 @@ import {
   BaseClientTool,
   type BaseClientToolMetadata,
   ClientToolCallState,
-} from '@/lib/copilot/tools/client/base-tool'
+} from '@/copilot/tools/client/base-tool'
 import {
   ExecuteResponseSuccessSchema,
   GetBlocksMetadataInput,
   GetBlocksMetadataResult,
-} from '@/lib/copilot/tools/shared/schemas'
-import { createLogger } from '@/lib/logs/console/logger'
+} from '@/copilot/tools/shared/schemas'
+import { createLogger } from '@/logs/console/logger'
 
 interface GetBlocksMetadataArgs {
   blockIds: string[]

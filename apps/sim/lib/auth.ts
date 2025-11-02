@@ -22,28 +22,28 @@ import {
   renderOTPEmail,
   renderPasswordResetEmail,
 } from '@/components/emails/render-email'
-import { sendPlanWelcomeEmail } from '@/lib/billing'
-import { authorizeSubscriptionReference } from '@/lib/billing/authorization'
-import { handleNewUser } from '@/lib/billing/core/usage'
-import { syncSubscriptionUsageLimits } from '@/lib/billing/organization'
-import { getPlans } from '@/lib/billing/plans'
-import { handleManualEnterpriseSubscription } from '@/lib/billing/webhooks/enterprise'
+import { sendPlanWelcomeEmail } from '@/billing'
+import { authorizeSubscriptionReference } from '@/billing/authorization'
+import { handleNewUser } from '@/billing/core/usage'
+import { syncSubscriptionUsageLimits } from '@/billing/organization'
+import { getPlans } from '@/billing/plans'
+import { handleManualEnterpriseSubscription } from '@/billing/webhooks/enterprise'
 import {
   handleInvoiceFinalized,
   handleInvoicePaymentFailed,
   handleInvoicePaymentSucceeded,
-} from '@/lib/billing/webhooks/invoices'
+} from '@/billing/webhooks/invoices'
 import {
   handleSubscriptionCreated,
   handleSubscriptionDeleted,
-} from '@/lib/billing/webhooks/subscription'
-import { sendEmail } from '@/lib/email/mailer'
-import { getFromEmailAddress } from '@/lib/email/utils'
-import { quickValidateEmail } from '@/lib/email/validation'
-import { env, isTruthy } from '@/lib/env'
-import { isBillingEnabled, isEmailVerificationEnabled } from '@/lib/environment'
-import { createLogger } from '@/lib/logs/console/logger'
-import { getBaseUrl } from '@/lib/urls/utils'
+} from '@/billing/webhooks/subscription'
+import { sendEmail } from '@/email/mailer'
+import { getFromEmailAddress } from '@/email/utils'
+import { quickValidateEmail } from '@/email/validation'
+import { env, isTruthy } from '@/env'
+import { isBillingEnabled, isEmailVerificationEnabled } from '@/environment'
+import { createLogger } from '@/logs/console/logger'
+import { getBaseUrl } from '@/urls/utils'
 import { SSO_TRUSTED_PROVIDERS } from './sso/consts'
 
 const logger = createLogger('Auth')

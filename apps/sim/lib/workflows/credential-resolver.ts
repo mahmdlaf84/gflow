@@ -1,8 +1,9 @@
-import { createLogger } from '@/lib/logs/console/logger'
-import { getProviderIdFromServiceId, getServiceIdFromScopes } from '@/lib/oauth/oauth'
 import { getBlock } from '@/blocks/index'
 import type { SubBlockConfig } from '@/blocks/types'
+import { createLogger } from '@/logs/console/logger'
+import { getProviderIdFromServiceId, getServiceIdFromScopes } from '@/oauth/oauth'
 import type { BlockState } from '@/stores/workflows/workflow/types'
+import { buildSystemUrl } from '@/urls/utils'
 
 const logger = createLogger('CredentialResolver')
 
@@ -138,7 +139,7 @@ async function resolveCredentialForSubBlock(
 
     // Fetch credentials from the API
     // Note: This assumes we're running in a server context with access to fetch
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+    const baseUrl = process.env.NEXTAUTH_URL || buildSystemUrl('3000')
     const credentialsUrl = `${baseUrl}/api/auth/oauth/credentials?provider=${effectiveProviderId}`
 
     logger.debug('Fetching credentials', { url: credentialsUrl })

@@ -2,6 +2,7 @@ import type { NextConfig } from 'next'
 import { env, getEnv, isTruthy } from './lib/env'
 import { isDev, isHosted } from './lib/environment'
 import { getMainCSPPolicy, getWorkflowExecutionCSPPolicy } from './lib/security/csp'
+import { buildSystemUrl, getSystemIPAddress } from './lib/urls/utils'
 
 const nextConfig: NextConfig = {
   devIndicators: false,
@@ -63,6 +64,26 @@ const nextConfig: NextConfig = {
             }
           })()
         : []),
+      (() => {
+        try {
+          const rawAppUrl = getEnv('NEXT_PUBLIC_APP_URL') || buildSystemUrl('3000')
+          const normalizedUrl = rawAppUrl.match(/^https?:\/\//) ? rawAppUrl : `http://${rawAppUrl}`
+          const appUrl = new URL(normalizedUrl)
+          const protocol = appUrl.protocol.replace(':', '')
+          return {
+            protocol: (protocol === 'https' ? 'https' : 'http') as 'http' | 'https',
+            hostname: appUrl.hostname,
+            port: appUrl.port || undefined,
+          }
+        } catch {
+          const ipAddress = getSystemIPAddress()
+          return {
+            protocol: 'http' as const,
+            hostname: ipAddress,
+            port: '3000',
+          }
+        }
+      })(),
     ],
   },
   typescript: {
@@ -91,8 +112,8 @@ const nextConfig: NextConfig = {
             }
           })()
         : []),
-      'localhost:3000',
-      'localhost:3001',
+      `${getSystemIPAddress()}:3000`,
+      `${getSystemIPAddress()}:3001`,
     ],
   }),
   transpilePackages: [
@@ -112,7 +133,7 @@ const nextConfig: NextConfig = {
           { key: 'Access-Control-Allow-Credentials', value: 'true' },
           {
             key: 'Access-Control-Allow-Origin',
-            value: env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001',
+            value: env.NEXT_PUBLIC_APP_URL || buildSystemUrl('3001'),
           },
           {
             key: 'Access-Control-Allow-Methods',

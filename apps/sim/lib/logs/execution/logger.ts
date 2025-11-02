@@ -9,13 +9,13 @@ import {
 } from '@sim/db/schema'
 import { eq, sql } from 'drizzle-orm'
 import { v4 as uuidv4 } from 'uuid'
-import { getHighestPrioritySubscription } from '@/lib/billing/core/subscription'
-import { checkUsageStatus, maybeSendUsageThresholdEmail } from '@/lib/billing/core/usage'
-import { checkAndBillOverageThreshold } from '@/lib/billing/threshold-billing'
-import { isBillingEnabled } from '@/lib/environment'
-import { createLogger } from '@/lib/logs/console/logger'
-import { emitWorkflowExecutionCompleted } from '@/lib/logs/events'
-import { snapshotService } from '@/lib/logs/execution/snapshot/service'
+import { getHighestPrioritySubscription } from '@/billing/core/subscription'
+import { checkUsageStatus, maybeSendUsageThresholdEmail } from '@/billing/core/usage'
+import { checkAndBillOverageThreshold } from '@/billing/threshold-billing'
+import { isBillingEnabled } from '@/environment'
+import { createLogger } from '@/logs/console/logger'
+import { emitWorkflowExecutionCompleted } from '@/logs/events'
+import { snapshotService } from '@/logs/execution/snapshot/service'
 import type {
   BlockOutputData,
   ExecutionEnvironment,
@@ -25,7 +25,7 @@ import type {
   WorkflowExecutionLog,
   WorkflowExecutionSnapshot,
   WorkflowState,
-} from '@/lib/logs/types'
+} from '@/logs/types'
 
 export interface ToolCall {
   name: string
@@ -244,7 +244,7 @@ export class ExecutionLogger implements IExecutionLoggerService {
               .from(organization)
               .where(eq(organization.id, sub.referenceId))
               .limit(1)
-            const { getPlanPricing } = await import('@/lib/billing/core/billing')
+            const { getPlanPricing } = await import('@/billing/core/billing')
             const { basePrice } = getPlanPricing(sub.plan)
             const minimum = (sub.seats || 1) * basePrice
             if (orgRows.length > 0 && orgRows[0].orgUsageLimit) {

@@ -2,25 +2,25 @@
  * Cost calculation functions for tokenization
  */
 
-import { createLogger } from '@/lib/logs/console/logger'
-import { createTokenizationError } from '@/lib/tokenization/errors'
+import { createLogger } from '@/logs/console/logger'
+import { calculateCost } from '@/providers/utils'
+import { createTokenizationError } from '@/tokenization/errors'
 import {
   estimateInputTokens,
   estimateOutputTokens,
   estimateTokenCount,
-} from '@/lib/tokenization/estimators'
+} from '@/tokenization/estimators'
 import type {
   CostBreakdown,
   StreamingCostResult,
   TokenizationInput,
   TokenUsage,
-} from '@/lib/tokenization/types'
+} from '@/tokenization/types'
 import {
   getProviderForTokenization,
   logTokenizationDetails,
   validateTokenizationInput,
-} from '@/lib/tokenization/utils'
-import { calculateCost } from '@/providers/utils'
+} from '@/tokenization/utils'
 
 const logger = createLogger('TokenizationCalculators')
 

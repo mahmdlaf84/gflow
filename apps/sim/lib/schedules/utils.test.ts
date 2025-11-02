@@ -12,7 +12,7 @@ import {
   parseCronToHumanReadable,
   parseTimeString,
   validateCronExpression,
-} from '@/lib/schedules/utils'
+} from '@/schedules/utils'
 
 describe('Schedule Utilities', () => {
   describe('parseTimeString', () => {

@@ -73,7 +73,7 @@ vi.doMock('drizzle-orm', () => ({
   desc: vi.fn((field) => ({ field, type: 'desc' })),
 }))
 
-vi.doMock('@/lib/logs/console/logger', () => ({
+vi.doMock('@/logs/console/logger', () => ({
   createLogger: vi.fn(() => ({
     info: vi.fn(),
     error: vi.fn(),
@@ -217,11 +217,11 @@ const mockWorkflowState: WorkflowState = {
 }
 
 describe('Database Helpers', () => {
-  let dbHelpers: typeof import('@/lib/workflows/db-helpers')
+  let dbHelpers: typeof import('@/workflows/db-helpers')
 
   beforeEach(async () => {
     vi.clearAllMocks()
-    dbHelpers = await import('@/lib/workflows/db-helpers')
+    dbHelpers = await import('@/workflows/db-helpers')
   })
 
   afterEach(() => {

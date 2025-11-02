@@ -2,19 +2,19 @@ import { db, webhook, workflow } from '@sim/db'
 import { tasks } from '@trigger.dev/sdk'
 import { and, eq } from 'drizzle-orm'
 import { type NextRequest, NextResponse } from 'next/server'
-import { getApiKeyOwnerUserId } from '@/lib/api-key/service'
-import { checkServerSideUsageLimits } from '@/lib/billing'
-import { getHighestPrioritySubscription } from '@/lib/billing/core/subscription'
-import { env, isTruthy } from '@/lib/env'
-import { createLogger } from '@/lib/logs/console/logger'
+import { getApiKeyOwnerUserId } from '@/api-key/service'
+import { executeWebhookJob } from '@/background/webhook-execution'
+import { checkServerSideUsageLimits } from '@/billing'
+import { getHighestPrioritySubscription } from '@/billing/core/subscription'
+import { env, isTruthy } from '@/env'
+import { createLogger } from '@/logs/console/logger'
+import { RateLimiter } from '@/services/queue'
 import {
   handleSlackChallenge,
   handleWhatsAppVerification,
   validateMicrosoftTeamsSignature,
   verifyProviderWebhook,
-} from '@/lib/webhooks/utils'
-import { executeWebhookJob } from '@/background/webhook-execution'
-import { RateLimiter } from '@/services/queue'
+} from '@/webhooks/utils'
 
 const logger = createLogger('WebhookProcessor')
 

@@ -1,9 +1,9 @@
-import type { Logger } from '@/lib/logs/console/logger'
-import { extractStorageKey } from '@/lib/uploads/file-utils'
-import { downloadFile } from '@/lib/uploads/storage-client'
-import { downloadExecutionFile } from '@/lib/workflows/execution-file-storage'
-import { isExecutionFile } from '@/lib/workflows/execution-files'
 import type { UserFile } from '@/executor/types'
+import type { Logger } from '@/logs/console/logger'
+import { extractStorageKey } from '@/uploads/file-utils'
+import { downloadFile } from '@/uploads/storage-client'
+import { downloadExecutionFile } from '@/workflows/execution-file-storage'
+import { isExecutionFile } from '@/workflows/execution-files'
 
 /**
  * Converts a single raw file object to UserFile format

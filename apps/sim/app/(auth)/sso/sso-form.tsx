@@ -59,6 +59,12 @@ export default function SSOForm() {
   const [showEmailValidationError, setShowEmailValidationError] = useState(false)
   const [buttonClass, setButtonClass] = useState('auth-button-gradient')
   const [callbackUrl, setCallbackUrl] = useState('/workspace')
+  const [isSignUpFlow, setIsSignUpFlow] = useState(false)
+
+  const callbackQuery = callbackUrl ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ''
+  const fallbackEmailHref = `${isSignUpFlow ? '/signup' : '/login'}${callbackQuery}`
+  const loginHref = `/login${callbackQuery}`
+  const signupHref = `/signup${callbackQuery}`
 
   useEffect(() => {
     if (searchParams) {
@@ -70,6 +76,9 @@ export default function SSOForm() {
           logger.warn('Invalid callback URL detected and blocked:', { url: callback })
         }
       }
+
+      const requestSignUpParam = searchParams.get('requestSignUp') === 'true'
+      setIsSignUpFlow(requestSignUpParam)
 
       // Pre-fill email if provided in URL (e.g., from deployed chat SSO)
       const emailParam = searchParams.get('email')
@@ -145,11 +154,21 @@ export default function SSOForm() {
 
     try {
       const safeCallbackUrl = validateCallbackUrl(callbackUrl) ? callbackUrl : '/workspace'
+      const params = new URLSearchParams({ callbackUrl: safeCallbackUrl })
+      if (isSignUpFlow) {
+        params.set('requestSignUp', 'true')
+      }
 
       await client.signIn.sso({
         email: emailValue,
         callbackURL: safeCallbackUrl,
-        errorCallbackURL: `/sso?error=sso_failed&callbackUrl=${encodeURIComponent(safeCallbackUrl)}`,
+        errorCallbackURL: `/sso?error=sso_failed&${params.toString()}`,
+        ...(isSignUpFlow
+          ? {
+              requestSignUp: true,
+              newUserCallbackURL: safeCallbackUrl,
+            }
+          : {}),
       })
     } catch (err) {
       logger.error('SSO sign-in failed', { error: err, email: emailValue })
@@ -181,7 +200,7 @@ export default function SSOForm() {
     <>
       <div className='space-y-1 text-center'>
         <h1 className={`${soehne.className} font-medium text-[32px] text-black tracking-tight`}>
-          Sign in with SSO
+          {isSignUpFlow ? 'Sign up with SSO' : 'Sign in with SSO'}
         </h1>
         <p className={`${inter.className} font-[380] text-[16px] text-muted-foreground`}>
           Enter your work email to continue
@@ -227,7 +246,11 @@ export default function SSOForm() {
           className={`${buttonClass} flex w-full items-center justify-center gap-2 rounded-[10px] border font-medium text-[15px] text-white transition-all duration-200`}
           disabled={isLoading}
         >
-          {isLoading ? 'Redirecting to SSO provider...' : 'Continue with SSO'}
+          {isLoading
+            ? 'Redirecting to SSO provider...'
+            : isSignUpFlow
+              ? 'Continue to SSO sign-up'
+              : 'Continue with SSO'}
         </Button>
       </form>
 
@@ -244,15 +267,13 @@ export default function SSOForm() {
           </div>
 
           <div className={`${inter.className} space-y-3`}>
-            <Link
-              href={`/login${callbackUrl ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ''}`}
-            >
+            <Link href={fallbackEmailHref}>
               <Button
                 variant='outline'
                 className='w-full rounded-[10px] shadow-sm hover:bg-gray-50'
                 type='button'
               >
-                Sign in with email
+                {isSignUpFlow ? 'Sign up with email' : 'Sign in with email'}
               </Button>
             </Link>
           </div>
@@ -262,20 +283,34 @@ export default function SSOForm() {
       {/* Only show signup link if email/password signup is enabled */}
       {!isFalsy(env.NEXT_PUBLIC_EMAIL_PASSWORD_SIGNUP_ENABLED) && (
         <div className={`${inter.className} pt-6 text-center font-light text-[14px]`}>
-          <span className='font-normal'>Don't have an account? </span>
-          <Link
-            href={`/signup${callbackUrl ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ''}`}
-            className='font-medium text-[var(--brand-accent-hex)] underline-offset-4 transition hover:text-[var(--brand-accent-hover-hex)] hover:underline'
-          >
-            Sign up
-          </Link>
+          {isSignUpFlow ? (
+            <>
+              <span className='font-normal'>Already have an account? </span>
+              <Link
+                href={loginHref}
+                className='font-medium text-[var(--brand-accent-hex)] underline-offset-4 transition hover:text-[var(--brand-accent-hover-hex)] hover:underline'
+              >
+                Sign in
+              </Link>
+            </>
+          ) : (
+            <>
+              <span className='font-normal'>Don't have an account? </span>
+              <Link
+                href={signupHref}
+                className='font-medium text-[var(--brand-accent-hex)] underline-offset-4 transition hover:text-[var(--brand-accent-hover-hex)] hover:underline'
+              >
+                Sign up
+              </Link>
+            </>
+          )}
         </div>
       )}
 
       <div
         className={`${inter.className} auth-text-muted absolute right-0 bottom-0 left-0 px-8 pb-8 text-center font-[340] text-[13px] leading-relaxed sm:px-8 md:px-[44px]`}
       >
-        By signing in, you agree to our{' '}
+        {isSignUpFlow ? 'By signing up, you agree to our ' : 'By signing in, you agree to our '}
         <Link
           href='/terms'
           target='_blank'

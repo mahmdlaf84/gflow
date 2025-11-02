@@ -48,7 +48,7 @@ import {
   getUsersWithPermissions,
   hasAdminPermission,
   hasWorkspaceAdminAccess,
-} from '@/lib/permissions/utils'
+} from '@/permissions/utils'
 
 const mockDb = db as any
 type PermissionType = 'admin' | 'write' | 'read'

@@ -3,8 +3,8 @@ import {
   DEFAULT_FREE_CREDITS,
   DEFAULT_PRO_TIER_COST_LIMIT,
   DEFAULT_TEAM_TIER_COST_LIMIT,
-} from '@/lib/billing/constants'
-import { env } from '@/lib/env'
+} from '@/billing/constants'
+import { env } from '@/env'
 
 /**
  * Get the free tier limit from env or fallback to default

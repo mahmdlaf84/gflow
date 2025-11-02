@@ -1,6 +1,6 @@
 import type { Edge } from 'reactflow'
 import { v4 as uuidv4 } from 'uuid'
-import { createLogger } from '@/lib/logs/console/logger'
+import { createLogger } from '@/logs/console/logger'
 import { mergeSubblockState } from '@/stores/workflows/utils'
 import type { BlockState, WorkflowState } from '@/stores/workflows/workflow/types'
 import type { BlockWithDiff } from './types'
@@ -636,7 +636,7 @@ export class WorkflowDiffEngine {
         baselineBlockCount: Object.keys(mergedBaseline.blocks).length,
       })
       try {
-        const { transferBlockHeights } = await import('@/lib/workflows/autolayout')
+        const { transferBlockHeights } = await import('@/workflows/autolayout')
         transferBlockHeights(mergedBaseline.blocks, finalBlocks)
       } catch (error) {
         logger.warn('Failed to transfer block heights', {
@@ -692,7 +692,7 @@ export class WorkflowDiffEngine {
             percentChanged: Math.round((impactedBlockArray.length / totalBlocks) * 100),
           })
 
-          const { applyTargetedLayout } = await import('@/lib/workflows/autolayout')
+          const { applyTargetedLayout } = await import('@/workflows/autolayout')
 
           const layoutedBlocks = applyTargetedLayout(finalBlocks, finalProposedState.edges, {
             changedBlockIds: impactedBlockArray,
@@ -739,9 +739,7 @@ export class WorkflowDiffEngine {
             allBlocksAreNew: impactedBlockArray.length === totalBlocks,
           })
 
-          const { applyAutoLayout: applyNativeAutoLayout } = await import(
-            '@/lib/workflows/autolayout'
-          )
+          const { applyAutoLayout: applyNativeAutoLayout } = await import('@/workflows/autolayout')
 
           const autoLayoutOptions = {
             horizontalSpacing: 550,

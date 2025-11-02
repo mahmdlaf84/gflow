@@ -17,8 +17,8 @@
  */
 
 import { context, type Span, SpanStatusCode, trace } from '@opentelemetry/api'
-import { createLogger } from '@/lib/logs/console/logger'
-import type { TraceSpan } from '@/lib/logs/types'
+import { createLogger } from '@/logs/console/logger'
+import type { TraceSpan } from '@/logs/types'
 
 /**
  * GenAI Semantic Convention Attributes

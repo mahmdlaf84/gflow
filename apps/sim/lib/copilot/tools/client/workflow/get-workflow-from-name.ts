@@ -3,10 +3,10 @@ import {
   BaseClientTool,
   type BaseClientToolMetadata,
   ClientToolCallState,
-} from '@/lib/copilot/tools/client/base-tool'
-import { createLogger } from '@/lib/logs/console/logger'
-import { sanitizeForCopilot } from '@/lib/workflows/json-sanitizer'
+} from '@/copilot/tools/client/base-tool'
+import { createLogger } from '@/logs/console/logger'
 import { useWorkflowRegistry } from '@/stores/workflows/registry/store'
+import { sanitizeForCopilot } from '@/workflows/json-sanitizer'
 
 const logger = createLogger('GetWorkflowFromNameClientTool')
 

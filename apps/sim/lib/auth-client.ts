@@ -8,11 +8,11 @@ import {
   organizationClient,
 } from 'better-auth/client/plugins'
 import { createAuthClient } from 'better-auth/react'
-import type { auth } from '@/lib/auth'
-import { env } from '@/lib/env'
-import { isBillingEnabled } from '@/lib/environment'
-import { SessionContext, type SessionHookResult } from '@/lib/session/session-context'
-import { getBaseUrl } from '@/lib/urls/utils'
+import type { auth } from '@/auth'
+import { env } from '@/env'
+import { isBillingEnabled } from '@/environment'
+import { SessionContext, type SessionHookResult } from '@/session/session-context'
+import { getBaseUrl } from '@/urls/utils'
 
 export const client = createAuthClient({
   baseURL: getBaseUrl(),

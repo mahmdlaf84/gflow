@@ -1,8 +1,8 @@
 import { db } from '@sim/db'
 import { workflowExecutionLogs } from '@sim/db/schema'
 import { desc, eq } from 'drizzle-orm'
-import type { BaseServerTool } from '@/lib/copilot/tools/server/base-tool'
-import { createLogger } from '@/lib/logs/console/logger'
+import type { BaseServerTool } from '@/copilot/tools/server/base-tool'
+import { createLogger } from '@/logs/console/logger'
 
 interface GetWorkflowConsoleArgs {
   workflowId: string

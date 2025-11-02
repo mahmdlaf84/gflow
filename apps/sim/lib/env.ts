@@ -1,6 +1,7 @@
 import { createEnv } from '@t3-oss/env-nextjs'
 import { env as runtimeEnv } from 'next-runtime-env'
 import { z } from 'zod'
+import { buildSystemUrl, getSystemIPAddress } from './network'
 
 /**
  * Universal environment variable getter that works in both client and server contexts.
@@ -8,7 +9,167 @@ import { z } from 'zod'
  * - Server-side: Falls back to process.env when runtimeEnv returns undefined
  * - Provides seamless Docker runtime variable support for NEXT_PUBLIC_ vars
  */
-const getEnv = (variable: string) => runtimeEnv(variable) ?? process.env[variable]
+const preferredHttpPort = process.env.PORT ? String(process.env.PORT) : '3000'
+
+const DEFAULT_EMAIL_LOCAL_PART = 'noreply'
+
+type IpFallbackConfig =
+  | { kind: 'url'; port?: string; protocol?: 'http' | 'https'; path?: string }
+  | { kind: 'host' }
+  | { kind: 'domain'; port?: string }
+  | { kind: 'email'; localPart?: string; port?: string }
+
+const explicitIpFallbackConfigs: Record<string, IpFallbackConfig> = {
+  NEXT_PUBLIC_APP_URL: { kind: 'url', port: preferredHttpPort },
+  BETTER_AUTH_URL: { kind: 'url', port: preferredHttpPort },
+  NEXTAUTH_URL: { kind: 'url', port: preferredHttpPort },
+  NEXT_PUBLIC_SOCKET_URL: { kind: 'url', port: '3002' },
+  SOCKET_SERVER_URL: { kind: 'url', port: '3002' },
+  OLLAMA_URL: { kind: 'url', port: '11434' },
+  EMAIL_DOMAIN: { kind: 'domain' },
+  FROM_EMAIL_ADDRESS: { kind: 'email' },
+  SIM_AGENT_API_URL: { kind: 'url', port: '8000' },
+  AGENT_INDEXER_URL: { kind: 'url', port: preferredHttpPort },
+}
+
+function buildFallbackValue(config: IpFallbackConfig): string {
+  const host = getSystemIPAddress()
+
+  switch (config.kind) {
+    case 'host':
+      return host
+    case 'domain': {
+      const portSegment = config.port ? `:${config.port}` : ''
+      return `${host}${portSegment}`
+    }
+    case 'email': {
+      const localPart = config.localPart ?? DEFAULT_EMAIL_LOCAL_PART
+      const portSegment = config.port ? `:${config.port}` : ''
+      return `${localPart}@${host}${portSegment}`
+    }
+    default: {
+      const protocol = config.protocol ?? 'http'
+      const portSegment = config.port ? `:${config.port}` : ''
+      const rawPath = config.path ?? ''
+      const normalizedPath = rawPath ? (rawPath.startsWith('/') ? rawPath : `/${rawPath}`) : ''
+      return `${protocol}://${host}${portSegment}${normalizedPath}`
+    }
+  }
+}
+
+const explicitIpFallbacks: Record<string, () => string> = {}
+for (const [variable, config] of Object.entries(explicitIpFallbackConfigs)) {
+  explicitIpFallbacks[variable] = () => buildFallbackValue(config)
+}
+
+const linkedEnvFallbacks: Record<string, string[]> = {
+  NEXT_PUBLIC_SSO_ENABLED: ['SSO_ENABLED'],
+}
+
+const FALLBACK_HEURISTIC_EXCLUSIONS = new Set<string>([
+  'DATABASE_URL',
+  'REDIS_URL',
+  'STRIPE_WEBHOOK_SECRET',
+  'TRIGGER_SECRET_KEY',
+])
+
+function computeHeuristicFallback(variable: string): string | undefined {
+  const upper = variable.toUpperCase()
+  if (FALLBACK_HEURISTIC_EXCLUSIONS.has(upper)) {
+    return undefined
+  }
+
+  if (upper.endsWith('_SOCKET_URL')) {
+    return buildSystemUrl('3002')
+  }
+
+  if (upper.startsWith('NEXT_PUBLIC_') && (upper.endsWith('_URL') || upper.endsWith('_ORIGIN'))) {
+    return buildSystemUrl(preferredHttpPort)
+  }
+
+  if (upper.endsWith('_HOST') || upper.endsWith('_HOSTNAME')) {
+    return getSystemIPAddress()
+  }
+
+  if (upper.endsWith('_DOMAIN')) {
+    return getSystemIPAddress()
+  }
+
+  if (upper.endsWith('_EMAIL')) {
+    return `${DEFAULT_EMAIL_LOCAL_PART}@${getSystemIPAddress()}`
+  }
+
+  return undefined
+}
+
+function computeIpFallback(variable: string): string | undefined {
+  const explicitFactory = explicitIpFallbacks[variable]
+  if (explicitFactory) {
+    try {
+      const value = explicitFactory()
+      if (value) {
+        return value
+      }
+    } catch {
+      // Ignore and continue to heuristics
+    }
+  }
+
+  try {
+    return computeHeuristicFallback(variable)
+  } catch {
+    return undefined
+  }
+}
+
+for (const variable of Object.keys(explicitIpFallbacks)) {
+  const existingValue = process.env[variable]
+  if (typeof existingValue === 'string' && existingValue.trim()) {
+    continue
+  }
+
+  const derived = computeIpFallback(variable)
+  if (derived) {
+    process.env[variable] = derived
+  }
+}
+
+const resolveEnv = (variable: string, visited: Set<string>): string | undefined => {
+  if (visited.has(variable)) {
+    return undefined
+  }
+
+  visited.add(variable)
+
+  const runtimeValue = runtimeEnv(variable)
+  const processValue = runtimeValue ?? process.env[variable]
+  const sanitizedValue = typeof processValue === 'string' ? processValue.trim() : processValue
+
+  if (sanitizedValue) {
+    return sanitizedValue
+  }
+
+  const linkedVariables = linkedEnvFallbacks[variable]
+  if (linkedVariables) {
+    for (const linkedVariable of linkedVariables) {
+      const linkedValue = resolveEnv(linkedVariable, visited)
+      if (linkedValue) {
+        process.env[variable] = linkedValue
+        return linkedValue
+      }
+    }
+  }
+
+  const fallbackValue = computeIpFallback(variable)
+  if (fallbackValue) {
+    process.env[variable] = fallbackValue
+    return fallbackValue
+  }
+
+  return undefined
+}
+
+const getEnv = (variable: string) => resolveEnv(variable, new Set())
 
 // biome-ignore format: keep alignment for readability
 export const env = createEnv({

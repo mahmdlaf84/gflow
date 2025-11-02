@@ -2,8 +2,8 @@ import { randomUUID } from 'crypto'
 import { db } from '@sim/db'
 import { idempotencyKey } from '@sim/db/schema'
 import { and, eq } from 'drizzle-orm'
-import { createLogger } from '@/lib/logs/console/logger'
-import { getRedisClient } from '@/lib/redis'
+import { createLogger } from '@/logs/console/logger'
+import { getRedisClient } from '@/redis'
 
 const logger = createLogger('IdempotencyService')
 

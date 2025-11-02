@@ -1,7 +1,7 @@
-import { createPermissionError, verifyWorkflowAccess } from '@/lib/copilot/auth/permissions'
-import type { BaseServerTool } from '@/lib/copilot/tools/server/base-tool'
-import { getEnvironmentVariableKeys } from '@/lib/environment/utils'
-import { createLogger } from '@/lib/logs/console/logger'
+import { createPermissionError, verifyWorkflowAccess } from '@/copilot/auth/permissions'
+import type { BaseServerTool } from '@/copilot/tools/server/base-tool'
+import { getEnvironmentVariableKeys } from '@/environment/utils'
+import { createLogger } from '@/logs/console/logger'
 
 interface GetEnvironmentVariablesParams {
   userId?: string

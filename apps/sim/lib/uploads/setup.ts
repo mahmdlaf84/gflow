@@ -1,4 +1,4 @@
-import { env } from '@/lib/env'
+import { env } from '@/env'
 
 // Client-safe configuration - no Node.js modules
 export const UPLOAD_DIR = '/uploads'

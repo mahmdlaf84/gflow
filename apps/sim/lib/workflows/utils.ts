@@ -3,12 +3,12 @@ import { apiKey, permissions, workflow as workflowTable, workspace } from '@sim/
 import type { InferSelectModel } from 'drizzle-orm'
 import { and, eq } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
-import { getSession } from '@/lib/auth'
-import { createLogger } from '@/lib/logs/console/logger'
-import type { PermissionType } from '@/lib/permissions/utils'
-import { getBaseUrl } from '@/lib/urls/utils'
+import { getSession } from '@/auth'
 import type { ExecutionResult } from '@/executor/types'
+import { createLogger } from '@/logs/console/logger'
+import type { PermissionType } from '@/permissions/utils'
 import type { WorkflowState } from '@/stores/workflows/workflow/types'
+import { getBaseUrl } from '@/urls/utils'
 
 const logger = createLogger('WorkflowUtils')
 

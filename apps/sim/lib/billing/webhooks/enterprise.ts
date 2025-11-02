@@ -6,9 +6,9 @@ import {
   getEmailSubject,
   renderEnterpriseSubscriptionEmail,
 } from '@/components/emails/render-email'
-import { sendEmail } from '@/lib/email/mailer'
-import { getFromEmailAddress } from '@/lib/email/utils'
-import { createLogger } from '@/lib/logs/console/logger'
+import { sendEmail } from '@/email/mailer'
+import { getFromEmailAddress } from '@/email/utils'
+import { createLogger } from '@/logs/console/logger'
 import type { EnterpriseSubscriptionMetadata } from '../types'
 
 const logger = createLogger('BillingEnterprise')

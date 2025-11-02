@@ -6,7 +6,7 @@
 import { db } from '@sim/db'
 import { organization, userStats } from '@sim/db/schema'
 import { eq, sql } from 'drizzle-orm'
-import { createLogger } from '@/lib/logs/console/logger'
+import { createLogger } from '@/logs/console/logger'
 
 const logger = createLogger('StorageTracking')
 
@@ -16,7 +16,7 @@ const logger = createLogger('StorageTracking')
 export async function incrementStorageUsage(userId: string, bytes: number): Promise<void> {
   try {
     // Check if user is in a team/enterprise org
-    const { getHighestPrioritySubscription } = await import('@/lib/billing/core/subscription')
+    const { getHighestPrioritySubscription } = await import('@/billing/core/subscription')
     const sub = await getHighestPrioritySubscription(userId)
 
     if (sub && (sub.plan === 'team' || sub.plan === 'enterprise')) {
@@ -52,7 +52,7 @@ export async function incrementStorageUsage(userId: string, bytes: number): Prom
 export async function decrementStorageUsage(userId: string, bytes: number): Promise<void> {
   try {
     // Check if user is in a team/enterprise org
-    const { getHighestPrioritySubscription } = await import('@/lib/billing/core/subscription')
+    const { getHighestPrioritySubscription } = await import('@/billing/core/subscription')
     const sub = await getHighestPrioritySubscription(userId)
 
     if (sub && (sub.plan === 'team' || sub.plan === 'enterprise')) {

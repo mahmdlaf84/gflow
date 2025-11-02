@@ -1,5 +1,5 @@
 import { jwtVerify, SignJWT } from 'jose'
-import { env } from '@/lib/env'
+import { env } from '@/env'
 
 type TestTokenPayload = {
   typ: 'webhook_test'

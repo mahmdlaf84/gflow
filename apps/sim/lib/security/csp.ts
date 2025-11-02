@@ -1,4 +1,5 @@
 import { env, getEnv } from '../env'
+import { buildSystemUrl, isLocalHostname } from '../urls/utils'
 
 /**
  * Content Security Policy (CSP) configuration builder
@@ -11,6 +12,27 @@ function getHostnameFromUrl(url: string | undefined): string[] {
   } catch {
     return []
   }
+}
+
+function getSocketCspSources(socketUrl: string | undefined): string[] {
+  const configured = socketUrl || buildSystemUrl('3002')
+  const websocketVariant = configured.replace('http://', 'ws://').replace('https://', 'wss://')
+
+  const sources = [configured, websocketVariant]
+
+  try {
+    const parsed = new URL(configured)
+    if (isLocalHostname(parsed.hostname)) {
+      sources.push('http:')
+      sources.push('https:')
+      sources.push('ws:')
+      sources.push('wss:')
+    }
+  } catch {
+    // Ignore parse errors and keep the defaults
+  }
+
+  return Array.from(new Set(sources))
 }
 
 export interface CSPDirectives {
@@ -76,11 +98,9 @@ export const buildTimeCSPDirectives: CSPDirectives = {
 
   'connect-src': [
     "'self'",
-    env.NEXT_PUBLIC_APP_URL || '',
-    env.OLLAMA_URL || 'http://localhost:11434',
-    env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3002',
-    env.NEXT_PUBLIC_SOCKET_URL?.replace('http://', 'ws://').replace('https://', 'wss://') ||
-      'ws://localhost:3002',
+    env.NEXT_PUBLIC_APP_URL || buildSystemUrl('3000'),
+    env.OLLAMA_URL || buildSystemUrl('11434'),
+    ...getSocketCspSources(env.NEXT_PUBLIC_SOCKET_URL),
     'https://api.browser-use.com',
     'https://api.exa.ai',
     'https://api.firecrawl.dev',
@@ -125,11 +145,10 @@ export function buildCSPString(directives: CSPDirectives): string {
  * This maintains compatibility with existing inline scripts while fixing Docker env var issues
  */
 export function generateRuntimeCSP(): string {
-  const socketUrl = getEnv('NEXT_PUBLIC_SOCKET_URL') || 'http://localhost:3002'
-  const socketWsUrl =
-    socketUrl.replace('http://', 'ws://').replace('https://', 'wss://') || 'ws://localhost:3002'
-  const appUrl = getEnv('NEXT_PUBLIC_APP_URL') || ''
-  const ollamaUrl = getEnv('OLLAMA_URL') || 'http://localhost:11434'
+  const socketUrl = getEnv('NEXT_PUBLIC_SOCKET_URL') || buildSystemUrl('3002')
+  const appUrl = getEnv('NEXT_PUBLIC_APP_URL') || buildSystemUrl('3000')
+  const ollamaUrl = getEnv('OLLAMA_URL') || buildSystemUrl('11434')
+  const socketSources = getSocketCspSources(socketUrl)
 
   const brandLogoDomains = getHostnameFromUrl(getEnv('NEXT_PUBLIC_BRAND_LOGO_URL'))
   const brandFaviconDomains = getHostnameFromUrl(getEnv('NEXT_PUBLIC_BRAND_FAVICON_URL'))
@@ -154,7 +173,7 @@ export function generateRuntimeCSP(): string {
     img-src 'self' data: blob: https://*.googleusercontent.com https://*.google.com https://*.atlassian.com https://cdn.discordapp.com https://*.githubusercontent.com ${brandLogoDomain} ${brandFaviconDomain};
     media-src 'self' blob:;
     font-src 'self' https://fonts.gstatic.com;
-    connect-src 'self' ${appUrl} ${ollamaUrl} ${socketUrl} ${socketWsUrl} https://api.browser-use.com https://api.exa.ai https://api.firecrawl.dev https://*.googleapis.com https://*.amazonaws.com https://*.s3.amazonaws.com https://*.blob.core.windows.net https://api.github.com https://github.com/* https://*.atlassian.com https://*.supabase.co ${dynamicDomainsStr};
+    connect-src 'self' ${appUrl} ${ollamaUrl} ${socketSources.join(' ')} https://api.browser-use.com https://api.exa.ai https://api.firecrawl.dev https://*.googleapis.com https://*.amazonaws.com https://*.s3.amazonaws.com https://*.blob.core.windows.net https://api.github.com https://github.com/* https://*.atlassian.com https://*.supabase.co ${dynamicDomainsStr};
     frame-src https://drive.google.com https://docs.google.com https://*.google.com;
     frame-ancestors 'self';
     form-action 'self';

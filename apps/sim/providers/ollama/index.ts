@@ -1,6 +1,7 @@
 import OpenAI from 'openai'
 import { env } from '@/lib/env'
 import { createLogger } from '@/lib/logs/console/logger'
+import { buildSystemUrl } from '@/lib/urls/utils'
 import type { StreamingExecution } from '@/executor/types'
 import type { ModelsObject } from '@/providers/ollama/types'
 import type {
@@ -18,7 +19,7 @@ import { useProvidersStore } from '@/stores/providers/store'
 import { executeTool } from '@/tools'
 
 const logger = createLogger('OllamaProvider')
-const OLLAMA_HOST = env.OLLAMA_URL || 'http://localhost:11434'
+const OLLAMA_HOST = env.OLLAMA_URL || buildSystemUrl('11434')
 
 /**
  * Helper function to convert an Ollama stream to a standard ReadableStream

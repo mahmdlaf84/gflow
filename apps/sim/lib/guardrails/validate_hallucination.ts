@@ -1,7 +1,7 @@
-import { createLogger } from '@/lib/logs/console/logger'
-import { getBaseUrl } from '@/lib/urls/utils'
+import { createLogger } from '@/logs/console/logger'
 import { executeProviderRequest } from '@/providers'
 import { getApiKey, getProviderFromModel } from '@/providers/utils'
+import { getBaseUrl } from '@/urls/utils'
 
 const logger = createLogger('HallucinationValidator')
 

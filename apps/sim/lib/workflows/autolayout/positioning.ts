@@ -1,4 +1,4 @@
-import { createLogger } from '@/lib/logs/console/logger'
+import { createLogger } from '@/logs/console/logger'
 import type { GraphNode, LayoutOptions } from './types'
 import { boxesOverlap, createBoundingBox } from './utils'
 

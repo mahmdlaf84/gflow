@@ -3,7 +3,7 @@ import {
   BaseClientTool,
   type BaseClientToolMetadata,
   ClientToolCallState,
-} from '@/lib/copilot/tools/client/base-tool'
+} from '@/copilot/tools/client/base-tool'
 
 export class OAuthRequestAccessClientTool extends BaseClientTool {
   static readonly id = 'oauth_request_access'

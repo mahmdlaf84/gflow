@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { getSession } from '@/lib/auth'
 import { isDev } from '@/lib/environment'
 import { createLogger } from '@/lib/logs/console/logger'
-import { getBaseUrl } from '@/lib/urls/utils'
+import { buildSystemUrl, getBaseUrl } from '@/lib/urls/utils'
 import { encryptSecret } from '@/lib/utils'
 import { deployWorkflow } from '@/lib/workflows/db-helpers'
 import { checkWorkflowAccessForChatCreation } from '@/app/api/chat/utils'
@@ -205,7 +205,7 @@ export async function POST(request: NextRequest) {
         })
         // Fallback based on environment
         if (isDev) {
-          chatUrl = `http://localhost:3000/chat/${identifier}`
+          chatUrl = `${buildSystemUrl('3000')}/chat/${identifier}`
         } else {
           chatUrl = `https://sim.ai/chat/${identifier}`
         }

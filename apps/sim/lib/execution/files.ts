@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
-import { createLogger } from '@/lib/logs/console/logger'
-import { uploadExecutionFile } from '@/lib/workflows/execution-file-storage'
 import type { UserFile } from '@/executor/types'
+import { createLogger } from '@/logs/console/logger'
+import { uploadExecutionFile } from '@/workflows/execution-file-storage'
 
 const logger = createLogger('ExecutionFiles')
 

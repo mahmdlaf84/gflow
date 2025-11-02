@@ -1,10 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { env } from '@/lib/env'
 import { createLogger } from '@/lib/logs/console/logger'
+import { buildSystemUrl } from '@/lib/urls/utils'
 import type { ModelsObject } from '@/providers/ollama/types'
 
 const logger = createLogger('OllamaModelsAPI')
-const OLLAMA_HOST = env.OLLAMA_URL || 'http://localhost:11434'
+const OLLAMA_HOST = env.OLLAMA_URL || buildSystemUrl('11434')
 
 export const dynamic = 'force-dynamic'
 
