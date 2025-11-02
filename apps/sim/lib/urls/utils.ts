@@ -1,5 +1,5 @@
-import { getEnv } from '@/env'
-import { isProd } from '@/environment'
+import { getEnv } from '../env'
+import { isProd } from '../environment'
 import { buildSystemUrl, getSystemIPAddress } from '../network'
 
 export { buildSystemUrl, getSystemIPAddress } from '../network'
