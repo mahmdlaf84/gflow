@@ -1,6 +1,7 @@
 import { createEnv } from '@t3-oss/env-nextjs'
 import { env as runtimeEnv } from 'next-runtime-env'
 import { z } from 'zod'
+import { buildSystemUrl } from '@/lib/network'
 
 /**
  * Universal environment variable getter that works in both client and server contexts.
@@ -8,6 +9,11 @@ import { z } from 'zod'
  * - Server-side: Falls back to process.env when runtimeEnv returns undefined
  * - Provides seamless Docker runtime variable support for NEXT_PUBLIC_ vars
  */
+if (!process.env.NEXT_PUBLIC_APP_URL) {
+  const preferredPort = process.env.PORT ? String(process.env.PORT) : '3000'
+  process.env.NEXT_PUBLIC_APP_URL = buildSystemUrl(preferredPort)
+}
+
 const getEnv = (variable: string) => runtimeEnv(variable) ?? process.env[variable]
 
 // biome-ignore format: keep alignment for readability
