@@ -1,5 +1,5 @@
 import { env, getEnv } from '../env'
-import { isLocalHostname } from '../urls/utils'
+import { buildSystemUrl, isLocalHostname } from '../urls/utils'
 
 /**
  * Content Security Policy (CSP) configuration builder
@@ -15,7 +15,7 @@ function getHostnameFromUrl(url: string | undefined): string[] {
 }
 
 function getSocketCspSources(socketUrl: string | undefined): string[] {
-  const configured = socketUrl || 'http://localhost:3002'
+  const configured = socketUrl || buildSystemUrl('3002')
   const websocketVariant = configured.replace('http://', 'ws://').replace('https://', 'wss://')
 
   const sources = [configured, websocketVariant]
@@ -98,8 +98,8 @@ export const buildTimeCSPDirectives: CSPDirectives = {
 
   'connect-src': [
     "'self'",
-    env.NEXT_PUBLIC_APP_URL || '',
-    env.OLLAMA_URL || 'http://localhost:11434',
+    env.NEXT_PUBLIC_APP_URL || buildSystemUrl('3000'),
+    env.OLLAMA_URL || buildSystemUrl('11434'),
     ...getSocketCspSources(env.NEXT_PUBLIC_SOCKET_URL),
     'https://api.browser-use.com',
     'https://api.exa.ai',
@@ -145,9 +145,9 @@ export function buildCSPString(directives: CSPDirectives): string {
  * This maintains compatibility with existing inline scripts while fixing Docker env var issues
  */
 export function generateRuntimeCSP(): string {
-  const socketUrl = getEnv('NEXT_PUBLIC_SOCKET_URL') || 'http://localhost:3002'
-  const appUrl = getEnv('NEXT_PUBLIC_APP_URL') || ''
-  const ollamaUrl = getEnv('OLLAMA_URL') || 'http://localhost:11434'
+  const socketUrl = getEnv('NEXT_PUBLIC_SOCKET_URL') || buildSystemUrl('3002')
+  const appUrl = getEnv('NEXT_PUBLIC_APP_URL') || buildSystemUrl('3000')
+  const ollamaUrl = getEnv('OLLAMA_URL') || buildSystemUrl('11434')
   const socketSources = getSocketCspSources(socketUrl)
 
   const brandLogoDomains = getHostnameFromUrl(getEnv('NEXT_PUBLIC_BRAND_LOGO_URL'))

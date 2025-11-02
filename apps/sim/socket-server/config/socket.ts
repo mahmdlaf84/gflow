@@ -3,7 +3,7 @@ import { Server } from 'socket.io'
 import { env } from '@/lib/env'
 import { isProd } from '@/lib/environment'
 import { createLogger } from '@/lib/logs/console/logger'
-import { getBaseUrl, isLocalHostname } from '@/lib/urls/utils'
+import { buildSystemUrl, getBaseUrl, isLocalHostname } from '@/lib/urls/utils'
 
 const logger = createLogger('SocketIOConfig')
 
@@ -13,8 +13,8 @@ const logger = createLogger('SocketIOConfig')
 function getAllowedOrigins(): { allowedOrigins: string[]; allowAnyOrigin: boolean } {
   const configuredOrigins = [
     getBaseUrl(),
-    'http://localhost:3000',
-    'http://localhost:3001',
+    buildSystemUrl('3000'),
+    buildSystemUrl('3001'),
     ...(env.ALLOWED_ORIGINS?.split(',') || []),
   ].filter((url): url is string => Boolean(url))
 
